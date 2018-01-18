@@ -1,0 +1,18 @@
+Some general notes from papers:
+
+eatwell0708:
+	Sugar 
+	High sugar content is more than 15g per 100g
+	Low sugar content is 5g or less per 100g
+
+	Salt
+	High salt content is more than 1.5g per 100g (or 0.6g sodium)
+	Low salt content is 0.3g salt or less per 100g (or 0.1 sodium)
+
+	Saturated fat
+	High sat fat content is more than 5g saturates per 100g
+	Low sat fat content is 1.5g or less per 100g
+
+	Fat
+	High fat content is more than 20g per 100g
+	Low fat content is 3g fat or less per 100g
