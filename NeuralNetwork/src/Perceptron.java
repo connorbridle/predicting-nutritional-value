@@ -16,6 +16,7 @@ public class Perceptron {
         }
     }
 
+    //Below is the different activation functions that can be used for the perceptron (ReLU is probably the best starting point)
     public float feedForwardInputs(float[] inputs) {
         float weightedSum = 0;
         for (int i = 0; i < weights.length; i++) {
