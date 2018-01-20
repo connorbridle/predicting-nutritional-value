@@ -6,4 +6,16 @@ public class Layer extends Vector{
     public Layer() {
 
     }
+
+    public void nonStatic() {
+
+    }
+
+    public static void myStatic() {
+
+    }
+
+    public void setOutput() {
+
+    }
 }
