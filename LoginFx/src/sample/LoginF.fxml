@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="290.0" layoutY="243.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../png/001-avatar.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="290.0" layoutY="298.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../png/002-padlock.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="textUsername" layoutX="340.0" layoutY="250.0" prefWidth="300.0" promptText="Username" />
+      <PasswordField fx:id="textPassword" layoutX="340.0" layoutY="305.0" prefWidth="300.0" promptText="Password" />
+      <Label layoutX="696.0" layoutY="23.0" text="Not got an account?" />
+      <Button layoutX="815.0" layoutY="19.0" mnemonicParsing="false" text="Sign up!" />
+      <Label layoutX="333.0" layoutY="81.0" prefHeight="53.0" prefWidth="193.0" text="Should I Eat">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <Label layoutX="534.0" layoutY="81.0" text="This?" textFill="#da5757">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <CheckBox layoutX="340.0" layoutY="349.0" mnemonicParsing="false" text="Remember Me">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </CheckBox>
+      <Button layoutX="526.0" layoutY="349.0" mnemonicParsing="false" onAction="#login" prefHeight="27.0" prefWidth="109.0" text="Login" />
+   </children>
+</AnchorPane>
