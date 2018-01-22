@@ -8,13 +8,6 @@ public class Layer extends ArrayList<Neuron>{
 
     }
 
-    public void nonStatic() {
-
-    }
-
-    public static void myStatic() {
-
-    }
 
 
 }

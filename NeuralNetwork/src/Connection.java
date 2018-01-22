@@ -1,7 +1,7 @@
 public class Connection {
 
-    private double weight = 0;
-    private double deltaWeight = 0; //Change in weight
+    double weight = 0;
+    double deltaWeight = 0; //Change in weight
 
     public Connection() {
 

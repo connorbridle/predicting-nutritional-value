@@ -1,0 +1,11 @@
+Inclusion of other factors such as age, weight, gender in a controlled environment (ie one with made up individuals
+	rather than an actual sample)
+Then using a neural network to solve this problem. The original/base categories could probably be solved with some hard
+	coded rules. Eg when sugar is above a certain point, classify RED. However with the introduction of more 
+	categories to classify the decision of whether or not to eat a certain food, it becomes a more difficult
+	problem.
+Using NN/AI to solve the obesity crisis in the western world.
+
+[][][]
+[][][B]
+[B]
