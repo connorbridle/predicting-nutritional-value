@@ -22,8 +22,8 @@ public class Neuron extends Layer{
         return randomNumber;
     }
 
-    public static void setOutput() {
-        System.out.println("Hello output");
+    public int setOutput() {
+        return 5;
     }
 
     public static void feedForward(Layer previousLayer) {

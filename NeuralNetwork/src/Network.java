@@ -33,7 +33,7 @@ public class Network {
             System.out.println(in);
         System.out.println(m_layers2.get(0).get(0));
         System.out.println((m_layers2.get(0).get(1)).getClass().getName());
-//        System.out.println((m_layers2.get(0).get(2)).setOutput());
+        System.out.println((m_layers2.get(0).get(2)).setOutput());
         System.out.println((m_layers2.get(0).get(2)));
     }
 
