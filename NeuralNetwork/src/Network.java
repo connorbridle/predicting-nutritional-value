@@ -7,8 +7,7 @@ public class Network {
     private double[] inputVals2;
     //private Vector<Double> targetVals;
     private double[] targetVals;
-    //private Vector<Layer> m_layers2 = new Vector<>(); //m_layers[layerNum][neuronNum]
-    private ArrayList<Layer> m_layers2 = new ArrayList<>();
+    private ArrayList<Layer> m_layers2 = new ArrayList<>(); //m_layers[layerNum][neuronNum]
     static int[] topology; //Assuming you only want a 3 layered network
     private double m_error; //Holds the error
     private double recentAverageError;
