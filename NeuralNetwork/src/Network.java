@@ -3,22 +3,26 @@ import java.util.Vector;
 
 public class Network {
     //Class variables
-    private Vector<Double> inputVals;
-    private double[] inputVals2;
-    //private Vector<Double> targetVals;
-    private double[] targetVals;
+    private static double[][] inputVals2;
+    private static double[] outputVals;
+    private static double[] targetVals;
     private ArrayList<Layer> m_layers2 = new ArrayList<>(); //m_layers[layerNum][neuronNum]
     static int[] topology; //Assuming you only want a 3 layered network
     private double m_error; //Holds the error
     private double recentAverageError;
     private double recentAverageSmoothingFactor;
+    private static int trainingPassesMade = 0;
+    //General variables
+    private int rowCounter;
+    private int inputLayerSize;
 
     //Constructor that creates the network of neurons
     public Network(int[] topology) {
+        inputLayerSize = topology[0]-1; //-1 to remove the bias node
+        rowCounter = 0;
         //Initialising the arrays
-        inputVals = new Vector<>();
-        //targetVals =
-        inputVals2 = new double[topology[0]];
+        inputVals2 = new double[topology[0]][2];
+        outputVals = new double[topology[topology.length-1]];
         int numOfLayers = topology.length; //Stores layer number in a variable
         for (int layerNum = 0; layerNum < numOfLayers; layerNum++) {
             m_layers2.add(new Layer()); //Creates a new layer then adds to the m_layers structure
@@ -36,13 +40,13 @@ public class Network {
     }
 
     //Feeds forward the activations throughout the network
-    private void feedForward(double[] inputVals2) {
+    private void feedForward(double[][] inputVals2) {
         //Check that the number of elements in input vals matches number of input nodes
         //Gets the first layer from the m_layers vector, and removes 1 from the size because of the bias neuron
-        if (inputVals.size() == m_layers2.get(0).size()-1) {
+        if (inputVals2.length == m_layers2.get(0).size()-1) {
             //Take the values from inputVals and latch them into input neuron
-            for (int input = 0; input < inputVals.size(); input++) {
-                m_layers2.get(0).get(input).setOutput(inputVals2[input]); //Sets the output of that neuron
+            for (int input = 0; input < inputLayerSize; input++) {
+                m_layers2.get(0).get(input).setOutput(inputVals2[rowCounter][input]); //Sets the output of that neuron
             }
 
             //Feed forward
@@ -53,6 +57,7 @@ public class Network {
                 }
             }
         }
+        rowCounter++; //Increment row counter to access inputVals structure
     }
 
     //Adjusts the weights of the connections dependent on the error attributed
@@ -101,14 +106,45 @@ public class Network {
     }
 
     //API that will output the results
-    private ArrayList<Double> getResults(ArrayList<Double> resultsVals) {
-        resultsVals.clear(); //Clears results
+    //private ArrayList<Double> getResults(ArrayList<Double> resultsVals) {
+    private double[] getResults(double[] outputVals) {
+        //Clears results
+        for (double row: outputVals) {
+            row = 0.0;
+        }
         Layer myOutputLayer = m_layers2.get(m_layers2.size()-1); //For convenience in accessing output layer
         for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
-            resultsVals.add(myOutputLayer.get(neuron).getOutputVal());
+            //resultsVals.add(myOutputLayer.get(neuron).getOutputVal());
+            outputVals[0] = myOutputLayer.get(neuron).getOutputVal();
         }
 
-        return resultsVals;
+        return outputVals;
+    }
+
+    //Overloaded for 2D array
+    private static void showMatrixValues(String variableLabel, double[][] input) {
+        //Method that prints out the matrix containers
+        for (double[] row: input) {
+            System.out.print(variableLabel + ": ");
+            for (double y: row) {
+                System.out.print(y + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    //Overloaded for normal array
+    private static void showMatrixValues(String variableLabel, double[] input) {
+        //Method that prints out the matrix containers
+        for (double row: input) {
+            System.out.print(variableLabel + " ");
+            System.out.print(row);
+            System.out.println();
+        }
+    }
+
+    private double getRecentAverageError() {
+        return recentAverageError;
     }
 
     public static void main(String[] args) {
@@ -116,12 +152,30 @@ public class Network {
         topology = new int[]{3,2,1};
         Network myNet = new Network(topology);
 
+        //Creation of new training data object
+        TrainingData myTrainingData = new TrainingData("C:/Users/C Bridle W4P52/Desktop/trainingData.txr");
+
         //Some pseudo on how the loop of training is meant to go
         //While training data is not at the end of the file
+        while (!myTrainingData.isEndOfFile()) {
+            trainingPassesMade++; //Increment how many passes made
+            System.out.println("Pass:" + trainingPassesMade);
             //Get the next two input layer
+            showMatrixValues("Inputs: ", inputVals2);
+            myNet.feedForward(inputVals2);
             //Collect the networks actual results
+            myNet.getResults(outputVals);
+            showMatrixValues("Outputs: ", outputVals);
             //Train the net on what the outputs should have been
+            myTrainingData.getTargetOutputValues(targetVals);
+            showMatrixValues("Targets: ", targetVals);
+            if (targetVals.length == topology[topology.length-1]) {
+                myNet.backPropagate(targetVals);
+            }
             //Report how well the training is working, average over recent samples
+            System.out.println("Net recent average error: " + myNet.getRecentAverageError());
+        }
+        System.out.println("Done");
 
     }
 }
