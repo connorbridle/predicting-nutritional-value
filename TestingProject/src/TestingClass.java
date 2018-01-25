@@ -7,15 +7,8 @@ public class TestingClass {
     public static int[][] myArray = new int[2][2];
 
     public static void main(String[] args) {
-        myArray[0][0] = 15;
-        myArray[0][1] = 20;
-        myArray[1][0] = 1;
-        myArray[1][1] = 11;
-        showMatrixValues("Input", myArray);
         String temp;
-        int counter1 = 0;
-        int counter2 = 0;
-        double[][] returnArray = new double[2000][2000];
+        ArrayList<ArrayList<Double>> listOfInputs = new ArrayList<>();
         String mys = "in: 0.0 0.0\n" +
                 "out: 0.0\n" +
                 "in: 1.0 0.0\n" +
@@ -31,18 +24,19 @@ public class TestingClass {
                 "in: 1.0 0.0";
         Scanner s = new Scanner(mys);
         while (s.hasNextLine()) {
+            ArrayList<Double> inputPair = new ArrayList<>();
             temp = s.nextLine();
             if (temp.contains("in:")) {
-                System.out.println("It does!");
                 temp = temp.replaceAll("in: ",""); //Removes 'in:'
                 String[] tempArray = temp.split(" ");
+                inputPair.add(Double.parseDouble(tempArray[0]));
+                inputPair.add(Double.parseDouble(tempArray[1]));
+                listOfInputs.add(inputPair);
                 System.out.println(Arrays.toString(tempArray));
-                //Take values
-                //Add it to double array at variable
             }
             System.out.println(temp);
+            System.out.println(listOfInputs);
         }
-
     }
     private static void showMatrixValues(String variableLabel, int[][] input) {
         //Method that prints out the matrix containers

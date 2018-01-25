@@ -1,0 +1,68 @@
+Poster sections to talk about
+Background
+Mockup Designs and actual design
+Survey on the mockup designs
+Neural Network Design
+General process the application is set to work
+Class diagram of the Neural network?
+Hypothesis
+Investigation into particular areas:
+	QR codes
+	Barcode scanning
+	Scanning food labels with OCR
+Food labels
+Input to Neural Network (Including normalisation)
+
+///////////////////////////////////////////////////////
+To Do List Wednesday and Thursday:
+Email Theo about a meeting next week
+Do some reading on relevant research papers
+Create a repo that will hold all the TYP files (Done)
+
+General To Do List
+Complete some mockup interface designs
+Cancel the gym membership (Emailed)
+
+Input[1]Input[1]Output[0]
+Input[1]Input[0]Output[1]
+Input[0]Input[1]Output[1]
+Input[0]Input[0]Output[0]
+
+/////////////////////////////////////////////////////////
+Tackling the obesity crisis with technology
+Applicability of using QR codes for nutrition data
+Type of application to build (Desktop app, Web app or Mobile app)
+Updating food packaging nutrition information with technology
+Nudging applicability
+Potential to use a neural network to classify whether the food is good to eat?
+Hard coding the ruleset using traditional programming practices or using NN?
+DO you really need a NN to solve this problem? Can you not simply just use hard coded 	rules as it's not an incredibly difficult problem to solve
+Creation of the different datasets (Training, benchmark and testing). Need to create 	probably quite a large set of data but before you can do this need to determine the 	criteria by which to judge the food.
+Considerations need to be made with regard to proposed percentages of intake per meal. 	Refer to the nutrientinstitution paper for this.
+
+NN input layer structure
+[Calories]
+[Fat]
+[Of which saturates]
+[Carbohydrates]
+[Of which sugars]
+[Fibre]
+[Protein]
+[Salt]
+//Additional inputs for added complexity
+[Gender]
+[Age]
+[Time of day]
+[Current level of activity]
+
+NN output layer structure
+[Green - Good to eat]
+Single output node that presents confidence score in whether the food is good to eat.
+The closer to 1, the better the confidence
+
+Need to consider the normalisation of the input values to all fit a common pattern
+Which type of activation function will work best? (Sigmoid, ReLU, tanh, softmax)
+
+
+
+

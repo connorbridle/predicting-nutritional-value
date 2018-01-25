@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Network {
     //Class variables
@@ -145,6 +146,32 @@ public class Network {
 
     private double getRecentAverageError() {
         return recentAverageError;
+    }
+
+    private void populateInputAndOutputValues() {
+        String temp;
+        ArrayList<ArrayList<Double>> listOfInputs = new ArrayList<>(); //AL to hold all the input tuples
+        ArrayList<ArrayList<Double>> listOfOutputs = new ArrayList<>(); //AL to hold all the output tuples
+        String mys = "";
+        Scanner s = new Scanner(mys);
+        while (s.hasNextLine()) {
+            //Input values
+            ArrayList<Double> inputPair = new ArrayList<>();
+            temp = s.nextLine();
+            if (temp.contains("in:")) {
+                temp = temp.replaceAll("in: ",""); //Removes 'in:'
+                String[] tempArray = temp.split(" ");
+                inputPair.add(Double.parseDouble(tempArray[0]));
+                inputPair.add(Double.parseDouble(tempArray[1]));
+                listOfInputs.add(inputPair);
+                System.out.println(Arrays.toString(tempArray));
+            } else if (temp.contains("out:")) {
+                //Output values
+
+            }
+            System.out.println(temp);
+            System.out.println(listOfInputs);
+        }
     }
 
     public static void main(String[] args) {
