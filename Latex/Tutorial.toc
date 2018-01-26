@@ -36,4 +36,6 @@
 \contentsline {subparagraph}{Applicability of OCR to scan nutrition data from food labels}{7}
 \contentsline {subparagraph}{Development of a mobile application}{7}
 \contentsline {subsection}{\numberline {5.2}Shortcomings of project}{7}
+\contentsline {subparagraph}{The potential differences in cultures that could causes implications to the viability of the final solution.}{7}
+\contentsline {subparagraph}{}{7}
 \contentsline {subsection}{\numberline {5.3}Objectives not achieved}{7}
