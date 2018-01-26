@@ -219,7 +219,6 @@ public class Network {
         while (trainingPassesMade< 1000) {
             trainingPassesMade++;
             System.out.println("Pass" + trainingPassesMade);
-            myNet.feedForward(listOfInputs.get());
             //for loop that goes over every pair in the input values
             for (int i = 0; i < listOfInputs.size(); i++) {
                 myNet.feedForward(listOfInputs.get(i)); //Get the next two inputs
