@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -13,6 +16,9 @@ public class Network {
     private double recentAverageError;
     private double recentAverageSmoothingFactor;
     private static int trainingPassesMade = 0;
+    private static ArrayList<ArrayList<Double>> listOfInputs = new ArrayList<>(); //AL to hold all the input tuples
+    private static ArrayList<ArrayList<Double>> listOfTargets = new ArrayList<>(); //AL to hold all the target tuples
+    private static ArrayList<ArrayList<Double>> listOfOutputs = new ArrayList<>(); //AL to hold all the output tuples
     //General variables
     private int rowCounter;
     private int inputLayerSize;
@@ -108,18 +114,27 @@ public class Network {
 
     //API that will output the results
     //private ArrayList<Double> getResults(ArrayList<Double> resultsVals) {
-    private double[] getResults(double[] outputVals) {
+    private ArrayList<ArrayList<Double>> getResults(ArrayList<ArrayList<Double>> listOfOutputs) {
         //Clears results
+        //This goes through all the values in the output lists and sets to 0 (not sure if that's what i want)
+        for (ArrayList<Double> row: listOfOutputs) {
+            for (double value: row) {
+                value = 0.0;
+            }
+        }
         for (double row: outputVals) {
             row = 0.0;
         }
+        ArrayList<Double> outputInnerArray = new ArrayList<>();
         Layer myOutputLayer = m_layers2.get(m_layers2.size()-1); //For convenience in accessing output layer
         for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
             //resultsVals.add(myOutputLayer.get(neuron).getOutputVal());
-            outputVals[0] = myOutputLayer.get(neuron).getOutputVal();
+            //outputVals[0] = myOutputLayer.get(neuron).getOutputVal();
+            outputInnerArray.add(myOutputLayer.get(neuron).getOutputVal());
         }
+        listOfOutputs.add(outputInnerArray);
 
-        return outputVals;
+        return listOfOutputs;
     }
 
     //Overloaded for 2D array
@@ -148,29 +163,45 @@ public class Network {
         return recentAverageError;
     }
 
-    private void populateInputAndOutputValues() {
+    //Function populates both the input and output arrays from a text file
+    //Required format for text file is as follows
+    //Inputs formatted on single line as "in: in1 in2 inN ..."
+    //Outputs formatted on a single line as "out: out2 out2 outN ..."
+    //Example text file:
+    //in: 1.0 0.5 0.3 0.2
+    //out: 1.0
+    private static void populateInputAndOutputValues() {
         String temp;
-        ArrayList<ArrayList<Double>> listOfInputs = new ArrayList<>(); //AL to hold all the input tuples
-        ArrayList<ArrayList<Double>> listOfOutputs = new ArrayList<>(); //AL to hold all the output tuples
-        String mys = "";
-        Scanner s = new Scanner(mys);
-        while (s.hasNextLine()) {
-            //Input values
-            ArrayList<Double> inputPair = new ArrayList<>();
-            temp = s.nextLine();
-            if (temp.contains("in:")) {
-                temp = temp.replaceAll("in: ",""); //Removes 'in:'
-                String[] tempArray = temp.split(" ");
-                inputPair.add(Double.parseDouble(tempArray[0]));
-                inputPair.add(Double.parseDouble(tempArray[1]));
-                listOfInputs.add(inputPair);
-                System.out.println(Arrays.toString(tempArray));
-            } else if (temp.contains("out:")) {
-                //Output values
+        try {
+            Scanner s = new Scanner(new File("src/trainingData.txt"));
+            while (s.hasNextLine()) {
+                //Input values
+                ArrayList<Double> inputRow = new ArrayList<>();
+                temp = s.nextLine();
+                if (temp.contains("in:")) {
+                    temp = temp.replaceAll("in: ",""); //Removes 'in:'
+                    String[] tempArray = temp.split(" ");
+                    //Loops through the array and adds each value to the return AL
+                    for (int i = 0; i < tempArray.length; i++) {
+                        inputRow.add(Double.parseDouble(tempArray[i]));
+                    }
+                    listOfInputs.add(inputRow);
+                } else if (temp.contains("out:")) {
+                    //Output values
+                    ArrayList<Double> outputRow = new ArrayList<>();
+                    temp = temp.replaceAll("out: ", "");
+                    String[] tempArray2 = temp.split(" ");
+                    //Loop through the array and add each value to the return AL
+                    for (int i = 0; i < tempArray2.length; i++) {
+                        outputRow.add(Double.parseDouble(tempArray2[i]));
+                    }
+                    listOfTargets.add(outputRow); //Adds the current output row to the outer AL container
 
+                }
             }
-            System.out.println(temp);
-            System.out.println(listOfInputs);
+        }catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -179,29 +210,50 @@ public class Network {
         topology = new int[]{3,2,1};
         Network myNet = new Network(topology);
 
+        //Populate input and output array lists with values from file
+        populateInputAndOutputValues();
+        System.out.println(listOfInputs);
+        System.out.println(listOfTargets);
+
+        //Main training loop
+        while (trainingPassesMade< 1000) {
+            trainingPassesMade++;
+            System.out.println("Pass" + trainingPassesMade);
+            myNet.feedForward(listOfInputs.get());
+            //for loop that goes over every pair in the input values
+            for (int i = 0; i < listOfInputs.size(); i++) {
+                myNet.feedForward(listOfInputs.get(i)); //Get the next two inputs
+                myNet.getResults(listOfOutputs);//Collect the networks actual results
+                //If the size of the set of target values is equal to number of input nodes
+                if (listOfTargets.get(i).size() == topology[topology.length-1]) {
+                    myNet.backPropagate(listOfTargets);
+                }
+            }
+        }
+
         //Creation of new training data object
-        TrainingData myTrainingData = new TrainingData("C:/Users/C Bridle W4P52/Desktop/trainingData.txr");
+        //TrainingData myTrainingData = new TrainingData("C:/Users/C Bridle W4P52/Desktop/trainingData.txr");
 
         //Some pseudo on how the loop of training is meant to go
         //While training data is not at the end of the file
-        while (!myTrainingData.isEndOfFile()) {
-            trainingPassesMade++; //Increment how many passes made
-            System.out.println("Pass:" + trainingPassesMade);
-            //Get the next two input layer
-            showMatrixValues("Inputs: ", inputVals2);
-            myNet.feedForward(inputVals2);
-            //Collect the networks actual results
-            myNet.getResults(outputVals);
-            showMatrixValues("Outputs: ", outputVals);
-            //Train the net on what the outputs should have been
-            myTrainingData.getTargetOutputValues(targetVals);
-            showMatrixValues("Targets: ", targetVals);
-            if (targetVals.length == topology[topology.length-1]) {
-                myNet.backPropagate(targetVals);
-            }
-            //Report how well the training is working, average over recent samples
-            System.out.println("Net recent average error: " + myNet.getRecentAverageError());
-        }
+//        while (!myTrainingData.isEndOfFile()) {
+//            trainingPassesMade++; //Increment how many passes made
+//            System.out.println("Pass:" + trainingPassesMade);
+//            //Get the next two input layer
+//            showMatrixValues("Inputs: ", inputVals2);
+//            myNet.feedForward(inputVals2);
+//            //Collect the networks actual results
+//            myNet.getResults(outputVals);
+//            showMatrixValues("Outputs: ", outputVals);
+//            //Train the net on what the outputs should have been
+//            myTrainingData.getTargetOutputValues(targetVals);
+//            showMatrixValues("Targets: ", targetVals);
+//            if (targetVals.length == topology[topology.length-1]) {
+//                myNet.backPropagate(targetVals);
+//            }
+//            //Report how well the training is working, average over recent samples
+//            System.out.println("Net recent average error: " + myNet.getRecentAverageError());
+//        }
         System.out.println("Done");
 
     }

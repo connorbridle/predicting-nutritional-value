@@ -19,7 +19,7 @@ public class TrainingData {
             int columns = s.nextInt();
             int returnMatrix[][] = new int[rows][columns];
             while (s.hasNextLine()) {
-                s.next(Pattern.compile("in:........"))
+                s.next(Pattern.compile("in:........"));
             }
         } catch (FileNotFoundException i) {
             System.out.println("File not found!");
