@@ -47,13 +47,14 @@ public class Network {
     }
 
     //Feeds forward the activations throughout the network
-    private void feedForward(double[][] inputVals2) {
+    private void feedForward(ArrayList<ArrayList<Double>> listOfInputs, int counter) {
         //Check that the number of elements in input vals matches number of input nodes
         //Gets the first layer from the m_layers vector, and removes 1 from the size because of the bias neuron
-        if (inputVals2.length == m_layers2.get(0).size()-1) {
-            //Take the values from inputVals and latch them into input neuron
+        System.out.println("Inputs: " + listOfInputs.get(counter));
+        if (listOfInputs.get(counter).size() == m_layers2.get(0).size()-2) {
+            //Take the values from listOfInputs and latch them into input neuron
             for (int input = 0; input < inputLayerSize; input++) {
-                m_layers2.get(0).get(input).setOutput(inputVals2[rowCounter][input]); //Sets the output of that neuron
+                m_layers2.get(0).get(input).setOutput(listOfInputs.get(counter).get(input));
             }
 
             //Feed forward
@@ -64,16 +65,33 @@ public class Network {
                 }
             }
         }
-        rowCounter++; //Increment row counter to access inputVals structure
+
+
+//        if (inputVals2.length == m_layers2.get(0).size()-1) {
+//            //Take the values from inputVals and latch them into input neuron
+//            for (int input = 0; input < inputLayerSize; input++) {
+//                m_layers2.get(0).get(input).setOutput(inputVals2[rowCounter][input]); //Sets the output of that neuron
+//            }
+//
+//            //Feed forward
+//            for (int layerNum = 1; layerNum < m_layers2.size(); layerNum++) {
+//                Layer prevLayer = m_layers2.get(layerNum-1); //Reference to the previous layer
+//                for (int neuron = 0; neuron < m_layers2.get(layerNum).size()-1; neuron++) {
+//                    m_layers2.get(layerNum).get(neuron).feedForward(prevLayer);
+//                }
+//            }
+//        }
+//        rowCounter++; //Increment row counter to access inputVals structure
     }
 
     //Adjusts the weights of the connections dependent on the error attributed
-    public void backPropagate(double[] targetVals) {
+    public void backPropagate(ArrayList<ArrayList<Double>> listOfTargets, int index) {
         //Calculate overall net error (Root mean square error of output neuron errors)
         Layer myOutputLayer = m_layers2.get(m_layers2.size()-1); //For convenience in accessing output layer
         m_error = 0.0;
         for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
-            double errorDelta = targetVals[neuron] - myOutputLayer.get(neuron).getOutputVal(); //Target value - actual value
+            System.out.println("Outputs: " + myOutputLayer.get(neuron).getOutputVal());
+            double errorDelta = listOfTargets.get(index).get(neuron) - myOutputLayer.get(neuron).getOutputVal();
             m_error += errorDelta * errorDelta; //After the loop m_error will be the sum of the errors
         }
         m_error /= myOutputLayer.size() -1; //Average error of the output layer squared (-1 to remove bias neuron)
@@ -83,15 +101,15 @@ public class Network {
         recentAverageError = (recentAverageError * recentAverageSmoothingFactor + m_error) /
                 (recentAverageSmoothingFactor + 1.0);
 
-        //Calculate output layer gradients
+        //Calculate the output layer gradients
         for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
-            myOutputLayer.get(neuron).calculateOutputGrads(targetVals[neuron]);
+            myOutputLayer.get(neuron).calculateOutputGrads(listOfTargets.get(index).get(neuron));
         }
 
-        //Calculate gradients on hidden layers
+        //Calculate the gradients on hidden layers
         for (int layerNum = m_layers2.size()-2; layerNum > 0; layerNum--) {
-            Layer myHiddenLayer = m_layers2.get(layerNum); //Convenience variable
-            Layer myNextLayer = m_layers2.get(layerNum+1); //Convenience variable
+            Layer myHiddenLayer = m_layers2.get(layerNum); //Variable for convenience
+            Layer myNextLayer = m_layers2.get(layerNum+1); //Variable for convenience
             for (int neuron = 0; neuron < myHiddenLayer.size(); neuron++) {
                 myHiddenLayer.get(neuron).calculateHiddenGrads(myNextLayer);
             }
@@ -110,6 +128,45 @@ public class Network {
             }
         }
 
+        //OLD CODE
+//        for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
+//            double errorDelta = targetVals[neuron] - myOutputLayer.get(neuron).getOutputVal(); //Target value - actual value
+//            m_error += errorDelta * errorDelta; //After the loop m_error will be the sum of the errors
+//        }
+////        m_error /= myOutputLayer.size() -1; //Average error of the output layer squared (-1 to remove bias neuron)
+////        m_error = Math.sqrt(m_error); // Root mean square error
+//
+////        //Recent error calculation code for feedback on networks performance
+////        recentAverageError = (recentAverageError * recentAverageSmoothingFactor + m_error) /
+////                (recentAverageSmoothingFactor + 1.0);
+//
+//        //Calculate output layer gradients
+//        for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
+//            myOutputLayer.get(neuron).calculateOutputGrads(targetVals[neuron]);
+//        }
+//
+//        //Calculate gradients on hidden layers
+//        for (int layerNum = m_layers2.size()-2; layerNum > 0; layerNum--) {
+//            Layer myHiddenLayer = m_layers2.get(layerNum); //Convenience variable
+//            Layer myNextLayer = m_layers2.get(layerNum+1); //Convenience variable
+//            for (int neuron = 0; neuron < myHiddenLayer.size(); neuron++) {
+//                myHiddenLayer.get(neuron).calculateHiddenGrads(myNextLayer);
+//            }
+//        }
+//
+//        //For all the layers from output to first hidden layer
+//        //update connection weights
+//        //Loop all layers
+//        for (int layerNum = m_layers2.size()-1; layerNum > 0; layerNum--) {
+//            Layer myLayer = m_layers2.get(layerNum);
+//            Layer myPrevLayer = m_layers2.get(layerNum-1);
+//
+//            //Loop each neuron
+//            for (int neuron = 0; neuron < myLayer.size()-1; neuron++) {
+//                myLayer.get(neuron).updateInputWeights(myPrevLayer);
+//            }
+//        }
+
     }
 
     //API that will output the results
@@ -117,14 +174,13 @@ public class Network {
     private ArrayList<ArrayList<Double>> getResults(ArrayList<ArrayList<Double>> listOfOutputs) {
         //Clears results
         //This goes through all the values in the output lists and sets to 0 (not sure if that's what i want)
-        for (ArrayList<Double> row: listOfOutputs) {
-            for (double value: row) {
-                value = 0.0;
-            }
-        }
-        for (double row: outputVals) {
-            row = 0.0;
-        }
+//        for (ArrayList<Double> row: listOfOutputs) {
+//            for (double value: row) {
+//                value = 0.0;
+//            }
+//        }
+        
+        
         ArrayList<Double> outputInnerArray = new ArrayList<>();
         Layer myOutputLayer = m_layers2.get(m_layers2.size()-1); //For convenience in accessing output layer
         for (int neuron = 0; neuron < myOutputLayer.size()-1; neuron++) {
@@ -216,17 +272,20 @@ public class Network {
         System.out.println(listOfTargets);
 
         //Main training loop
-        while (trainingPassesMade< 1000) {
+        while (trainingPassesMade< 10) {
             trainingPassesMade++;
-            System.out.println("Pass" + trainingPassesMade);
+            System.out.println("Pass: " + trainingPassesMade);
             //for loop that goes over every pair in the input values
             for (int i = 0; i < listOfInputs.size(); i++) {
-                myNet.feedForward(listOfInputs.get(i)); //Get the next two inputs
+                System.out.println("Training data input: " + i);
+                myNet.feedForward(listOfInputs, i); //Get the next two inputs
+                //It might not be a good idea here to have an arraylist of 4000000 values (2000inputs*2000passes)
                 myNet.getResults(listOfOutputs);//Collect the networks actual results
                 //If the size of the set of target values is equal to number of input nodes
                 if (listOfTargets.get(i).size() == topology[topology.length-1]) {
-                    myNet.backPropagate(listOfTargets);
+                    myNet.backPropagate(listOfTargets, i);
                 }
+                System.out.println("Net recent average error: " + myNet.getRecentAverageError());
             }
         }
 

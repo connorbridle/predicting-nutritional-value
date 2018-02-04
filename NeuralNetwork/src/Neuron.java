@@ -4,7 +4,6 @@ import java.util.Vector;
 
 public class Neuron extends Layer{
     private double outputVal;
-    private Vector<Connection> outputWeights = new Vector<>();
     private ArrayList<Connection> outputWeights2 = new ArrayList<>();
     private int m_myIndex;
     private double gradient;
@@ -102,6 +101,10 @@ public class Neuron extends Layer{
             previousLayerNeuron.outputWeights2.get(m_myIndex).weight += newDeltaWeight; //change the weight by adding the delta weight
 
         }
+    }
+
+    public ArrayList<Connection> displayTest() {
+        return outputWeights2;
     }
 
 }
