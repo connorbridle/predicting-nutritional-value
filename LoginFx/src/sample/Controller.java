@@ -35,6 +35,7 @@ public class Controller {
             primaryStage.setTitle("Hello World");
             primaryStage.setScene(newScene);
             primaryStage.show();
+            System.out.println("Testing");
         } else {
             //do something else
         }
