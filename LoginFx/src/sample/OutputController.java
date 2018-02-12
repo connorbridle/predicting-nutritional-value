@@ -39,8 +39,15 @@ public class OutputController {
                 RDA_FIBRE, RDA_PROTEIN, RDA_SALT};
         double[] output = populateMeasurementArray(measurementArray, measurementRDA);
 
-        System.out.println(overRDA(output));
+        if (overRDA(output)) {
+            //TODO output no decision as one of the macro-nutrients is over the RDA
+        } else {
+            //TODO continue with the decision making and calling the feeder methods
+        }
     }
+
+    //TODO maybe can combine the overRDA and populateMeasurementArray so that as soon as one macro-nutrient is over RDA,
+    //TODO it stops populating the array and returns true.
 
     //Function that is used to measure whether the current intake is above the RDA. Returns an array filled with
     //either 1's or 0's. 1 meaning over RDA and 0 meaning under. Can then be used in the overRDA method
@@ -71,6 +78,8 @@ public class OutputController {
     }
 
     //TODO need to implement all the methods that will calculate the individul scores and influence what is placed on the screen in results
-
+    private static int calculateCaloriesScore(double cals) {
+        return 5;
+    }
 
 }
