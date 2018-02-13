@@ -32,7 +32,7 @@ public class Controller {
             Parent newView = FXMLLoader.load(getClass().getResource("index.fxml"));
             Scene newScene = new Scene(newView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Hello World");
+            primaryStage.setTitle("Home");
             primaryStage.setScene(newScene);
             primaryStage.show();
         } else {

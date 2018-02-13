@@ -1,11 +1,29 @@
 package sample;
 
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class OutputController {
 
     FoodItem currentFoodItem;
+
+    @FXML private Label calsLabel;
+    @FXML private Label fatLabel;
+    @FXML private Label satFatLabel;
+    @FXML private Label carbsLabel;
+    @FXML private Label sugarsLabel;
+    @FXML private Label fibreLabel;
+    @FXML private Label proteinLabel;
+    @FXML private Label saltLabel;
 
     //Variables that hold the summed intake of all macro-nutrients
     public static double totalIntakeCal= 0.0;
@@ -77,9 +95,78 @@ public class OutputController {
         return false;
     }
 
+    //TODO add a try catch block
+    //Function that takes you back to the starting point
+    public void returnToStart(ActionEvent event) throws IOException {
+        Parent returnView = FXMLLoader.load(getClass().getResource("index.fxml"));
+        Scene newScene = new Scene(returnView);
+        Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        primaryStage.setTitle("Home");
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+    }
+
+    //TODO add a try catch block
+    //Function that opens the detailed results page
+    public void goToDetailedView(ActionEvent event) throws IOException{
+        Parent detailedView = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
+        Scene newScene = new Scene(detailedView);
+        Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        primaryStage.setTitle("Detailed Macro-Nutrient Breakdown");
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+    }
+
     //TODO need to implement all the methods that will calculate the individul scores and influence what is placed on the screen in results
+    //TODO might be better to have all these functions as a single one, and pass in the food item value and rda for each
+    //Calculates a score for the calories contained in the food item
     private static int calculateCaloriesScore(double cals) {
         return 5;
+    }
+
+    //Calculates a score for the fat contained in the food item
+    private static int calculateFatScore(double fat) {
+        return 5;
+    }
+
+    //Calculates a score for the satfat contained in the food item
+    private static int calculateSatFatScore(double satFat) {
+        return 5;
+    }
+
+    //Calculates a score for the carbs contained in the food item
+    private static int calculateCarbsScore(double carbs) {
+        return 5;
+    }
+
+    //Calculates a score for the sugars contained in the food item
+    private static int calculateSugarsScore(double sugars) {
+        return 5;
+    }
+
+    //Calculates a score for the fibre contained in the food item
+    private static int calculateFibreScore(double fibre) {
+        return 5;
+    }
+
+    //Calculates a score for the fibre contained in the food item
+    private static int calculateSaltScore() {
+        return 5;
+    }
+
+    //Function that outputs a no decision from the algorithm
+    private static void outputRedDecision() {
+
+    }
+
+    //Function that outputs a maybe decision from the algorithm
+    private static void outputAmberDecision() {
+
+    }
+
+    //Function that outputs a yes decision from the algorithm
+    private static void outputGreenDecision() {
+
     }
 
 }

@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import java.util.ArrayList;
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -36,6 +35,7 @@ public class IndexController {
         //More efficient way of adding all the text boxes here, maybe need to rethink the data structure used
         //TODO try to find a better way of validating input here
         //Checking whether any of the inputs are null, if they are, display error message/prompt
+        //TODO exception occurs somehwere after this point
         if (!(caloriesText.getText().equals("") || fatText.getText().equals("")|| satFatText.getText().equals("")|| carbsText.getText().equals("")
                 || sugarText.getText().equals("")|| fibreText.getText().equals("")|| proteinText.getText().equals("")
                 || saltText.getText().equals("")))
