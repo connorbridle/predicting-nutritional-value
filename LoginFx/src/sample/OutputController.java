@@ -8,9 +8,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 public class OutputController {
 
@@ -45,6 +48,13 @@ public class OutputController {
     private final static double RDA_PROTEIN = 150;
     private final static double RDA_SALT = 150;
     private static double currentIntake = 0;
+
+    //All of the above might be redundant after using the csv file data structure
+    List<List<String>> maleRDA;
+    String maleRDAFilePath = "sample/Males_Datastructure.csv";
+    List<List<String>> femaleRDA;
+    String femaleRDAFilePath = "sample/Females_Datastructure.csv";
+
 
     //Main function that communicates with the other feeder functions
     public void startPrediction(FoodItem inputtedFoodItem) {
@@ -167,6 +177,35 @@ public class OutputController {
     //Function that outputs a yes decision from the algorithm
     private static void outputGreenDecision() {
 
+    }
+
+    public static List<List<String>> csvParser(String filePath) {
+        File file= new File(filePath);
+
+        // Gives 2d arraylist
+        List<List<String>> lines = new ArrayList<>();
+        Scanner inputStream = null;
+        try {
+            inputStream = new Scanner(file);
+            while(inputStream.hasNext()){
+                String line= inputStream.next();
+                String[] values = line.split(",");
+                // this adds the currently parsed line to the 2-dimensional string array
+                lines.add(Arrays.asList(values));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            inputStream.close();
+        }
+//        //Loop through arraylist
+//        for (int i = 0; i < lines.size(); i++) {
+//            for (int j = 0; i < lines.get(i).size(); i++) {
+//                //Do some stuff
+//            }
+//        }
+
+        return lines;
     }
 
 }
