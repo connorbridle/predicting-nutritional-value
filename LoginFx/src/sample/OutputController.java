@@ -38,6 +38,7 @@ public class OutputController {
     public static double totalIntakeProtein= 0.0;
     public static double totalIntakeSalt = 0.0;
 
+    //TODO remove this as it's redundant now
     //Variables that hold the RDA of all the macro-nutrients
     private final static double RDA_CALS = 150;
     private final static double RDA_FAT = 150;
@@ -49,17 +50,45 @@ public class OutputController {
     private final static double RDA_SALT = 150;
     private static double currentIntake = 0;
 
+    //Variable that holds the value of a decision (1=Red, 2=Amber, 3=Green)
+    private int foodItemDecision = 0;
+
+    //Variable that holds the row index for the persons age when the person inputs their age and submits
+    private static int rowIndex = 0;
+    private static int inputtedAge = 25; //TODO Testing variable, delete when done
+
     //All of the above might be redundant after using the csv file data structure
     List<List<String>> maleRDA;
-    String maleRDAFilePath = "sample/Males_Datastructure.csv";
+    String maleRDAFilePath = "/Users/connorbridle/Desktop/Third-Year-Project/typ/LoginFx/src/sample/Males_Datastructure.csv";
     List<List<String>> femaleRDA;
-    String femaleRDAFilePath = "sample/Females_Datastructure.csv";
+    String femaleRDAFilePath = "/Users/connorbridle/Desktop/Third-Year-Project/typ/LoginFx/src/sample/Females_Datastructure.csv";
+    List<String> currentRow;
 
 
     //Main function that communicates with the other feeder functions
     public void startPrediction(FoodItem inputtedFoodItem) {
         currentFoodItem = inputtedFoodItem;
         System.out.println("GOT FOOD ITEM: " + currentFoodItem.getItemFat());
+
+        //Fills 2d array list with csv values
+        //TODO if the person is male, parse male csv, if female parse female csv
+        maleRDA = csvParser(maleRDAFilePath);
+        femaleRDA = csvParser(femaleRDAFilePath);
+        rowIndex = returnRowIndex(inputtedAge); //Calculates the row index
+        currentRow = maleRDA.get(rowIndex);
+
+        //Pass the values contained to the various score methods
+        int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
+        int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
+        int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
+        int carbsScore = calculateCarbsScore(inputtedFoodItem.getItemCarbs(), currentRow);
+        int sugarsScore = calculateSugarsScore(inputtedFoodItem.getItemSugar(), currentRow);
+        int fibreScore = calculateFibreScore(inputtedFoodItem.getItemFibre(), currentRow);
+        int proteinScore = calculateProteinScore(inputtedFoodItem.getItemProtein(), currentRow);
+        int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium());
+        System.out.println("Sat fat score:" + satFatScore);
+
+
 
         double[] measurementArray = {totalIntakeCal,totalIntakeFat,totalIntakeSatFat,totalIntakeCarbs,totalIntakeSugars,
                 totalIntakeFibre,totalIntakeProtein,totalIntakeSalt};
@@ -68,7 +97,9 @@ public class OutputController {
         double[] output = populateMeasurementArray(measurementArray, measurementRDA);
 
         if (overRDA(output)) {
-            //TODO output no decision as one of the macro-nutrients is over the RDA
+            foodItemDecision = 1; //Equivalent to saying that the decision is red/no
+            outputRedDecision();
+            System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
         }
@@ -105,62 +136,94 @@ public class OutputController {
         return false;
     }
 
-    //TODO add a try catch block
     //Function that takes you back to the starting point
-    public void returnToStart(ActionEvent event) throws IOException {
-        Parent returnView = FXMLLoader.load(getClass().getResource("index.fxml"));
-        Scene newScene = new Scene(returnView);
-        Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        primaryStage.setTitle("Home");
-        primaryStage.setScene(newScene);
-        primaryStage.show();
+    public void returnToStart(ActionEvent event) {
+        try {
+            Parent returnView = FXMLLoader.load(getClass().getResource("index.fxml"));
+            Scene newScene = new Scene(returnView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Home");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    //TODO add a try catch block
     //Function that opens the detailed results page
-    public void goToDetailedView(ActionEvent event) throws IOException{
-        Parent detailedView = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
-        Scene newScene = new Scene(detailedView);
-        Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        primaryStage.setTitle("Detailed Macro-Nutrient Breakdown");
-        primaryStage.setScene(newScene);
-        primaryStage.show();
+    public void goToDetailedView(ActionEvent event) {
+        try {
+            Parent detailedView = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
+            Scene newScene = new Scene(detailedView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Detailed Macro-Nutrient Breakdown");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+        } catch (IOException e) {
+            System.out.println("Input/Output exception!");
+            e.printStackTrace();
+        }
     }
 
     //TODO need to implement all the methods that will calculate the individul scores and influence what is placed on the screen in results
     //TODO might be better to have all these functions as a single one, and pass in the food item value and rda for each
     //Calculates a score for the calories contained in the food item
-    private static int calculateCaloriesScore(double cals) {
+    private static int calculateCaloriesScore(double cals, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
         return 5;
     }
 
     //Calculates a score for the fat contained in the food item
-    private static int calculateFatScore(double fat) {
-        return 5;
+    private static int calculateFatScore(double fat, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage  = (fat / (Double.parseDouble(currentRow.get(2))) ) * 100;
+        int returnScore = (int)percentage;
+        return returnScore;
     }
 
     //Calculates a score for the satfat contained in the food item
-    private static int calculateSatFatScore(double satFat) {
-        return 5;
+    private static int calculateSatFatScore(double satFat, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
+
+        int returnScore = (int)percentage;
+        return returnScore;
     }
 
     //Calculates a score for the carbs contained in the food item
-    private static int calculateCarbsScore(double carbs) {
-        return 5;
+    private static int calculateCarbsScore(double carbs, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (carbs / (Double.parseDouble(currentRow.get(4))) ) * 100;
+        int returnScore = (int)percentage;
+        return returnScore;
     }
 
     //Calculates a score for the sugars contained in the food item
-    private static int calculateSugarsScore(double sugars) {
+    private static int calculateSugarsScore(double sugars, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (sugars / (Double.parseDouble(currentRow.get(5))) ) * 100;
+        int returnScore = (int)percentage;
+        return returnScore;
+    }
+
+    //Calculates a score for the fibre contained in the food item
+    private static int calculateFibreScore(double fibre, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (fibre / (Double.parseDouble(currentRow.get(6))) ) * 100;
+        int returnScore = (int)percentage;
+        return returnScore;
+    }
+
+    //Calculates a score for the protein contained in the food item
+    private static int calculateProteinScore(double protein, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (protein / (Double.parseDouble(currentRow.get(7))) ) * 100;
         return 5;
     }
 
     //Calculates a score for the fibre contained in the food item
-    private static int calculateFibreScore(double fibre) {
-        return 5;
-    }
-
-    //Calculates a score for the fibre contained in the food item
-    private static int calculateSaltScore() {
+    private static int calculateSaltScore(double salt) {
         return 5;
     }
 
@@ -177,6 +240,10 @@ public class OutputController {
     //Function that outputs a yes decision from the algorithm
     private static void outputGreenDecision() {
 
+    }
+
+    private static int returnRowIndex(int age) {
+        return (age - 18);
     }
 
     public static List<List<String>> csvParser(String filePath) {
