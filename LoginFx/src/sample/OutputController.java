@@ -151,7 +151,7 @@ public class OutputController {
     }
 
     //Function that opens the detailed results page
-    public void goToDetailedView(ActionEvent event) {
+    public void seeResults(ActionEvent event) {
         try {
             Parent detailedView = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
             Scene newScene = new Scene(detailedView);

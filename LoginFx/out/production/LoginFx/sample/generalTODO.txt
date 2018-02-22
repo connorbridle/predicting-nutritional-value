@@ -1,0 +1,1 @@
+TODO Create a system where the user can save their current days intake. Could be done via a text file which clear at a set time each day

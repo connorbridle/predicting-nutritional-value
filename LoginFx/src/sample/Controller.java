@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
@@ -25,18 +26,23 @@ public class Controller {
     @FXML
     private  TextField textPassword;
 
+    @FXML
+    private Button myButton;
 
 
-    public void login(ActionEvent event) throws IOException {
+
+    public void login()  {
         if (textUsername.getText().equals("username") && textPassword.getText().equals("password")) {
-            Parent newView = FXMLLoader.load(getClass().getResource("index.fxml"));
-            Scene newScene = new Scene(newView);
-            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Home");
-            primaryStage.setScene(newScene);
-            primaryStage.show();
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("index.fxml"));
+                myButton.getScene().setRoot(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         } else {
             //do something else
         }
     }
+
 }

@@ -74,16 +74,16 @@ public class IndexController {
 
             //TODO create a new window with a new controller that will function as the output window which displays results
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("OutputPage.fxml"));
+            loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
             Parent outputView = loader.load();
 
             //access the controller and call the method
-            OutputController controller = loader.getController();
+            RedResultController controller = loader.getController();
             controller.startPrediction(newFoodItem);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Food item adsvice");
+            primaryStage.setTitle("Food item advice");
             primaryStage.setScene(newScene);
             primaryStage.show();
             //end new window code
