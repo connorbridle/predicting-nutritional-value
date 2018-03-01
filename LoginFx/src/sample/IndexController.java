@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
@@ -16,7 +17,10 @@ import java.util.InputMismatchException;
 import javafx.scene.control.Alert;
 
 public class IndexController {
-    @FXML TextField caloriesText, fatText, satFatText, carbsText, sugarText, fibreText, proteinText, saltText;
+    @FXML
+    TextField caloriesText, fatText, satFatText, carbsText, sugarText, fibreText, proteinText, saltText;
+    @FXML
+    Button sampleFoodButton;
 
     public void submitData(ActionEvent event) throws IOException {
 
@@ -104,4 +108,16 @@ public class IndexController {
             System.out.println(input.get(i));
         }
     }
+
+    public void sampleFoods() {
+        try{
+            Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
+            sampleFoodButton.getScene().setRoot(root); //TODO null pointer
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException n) {
+            System.out.println("NULL POINTER");
+        }
+    }
+
 }
