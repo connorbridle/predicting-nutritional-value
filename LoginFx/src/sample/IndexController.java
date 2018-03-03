@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import java.util.ArrayList;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.InputMismatchException;
+
 import javafx.scene.control.Alert;
 
 public class IndexController {
@@ -76,7 +80,6 @@ public class IndexController {
             //Creation of new food item
             newFoodItem = new FoodItem(cals, fat, satFat, carbs, sugar, fibre, protein, salt);
 
-            //TODO create a new window with a new controller that will function as the output window which displays results
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
             Parent outputView = loader.load();
@@ -115,9 +118,45 @@ public class IndexController {
             sampleFoodButton.getScene().setRoot(root); //TODO null pointer
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NullPointerException n) {
-            System.out.println("NULL POINTER");
         }
+    }
+
+    //Function that gets all the food items from the stored csv file and returns them in an observable list
+    public ObservableList<FoodItem> getFoodItem() {
+        ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
+
+
+        return storedFoodItems;
+    }
+
+    //Function for parsing csv files
+    public static List<List<String>> csvParser(String filePath) {
+        File file= new File(filePath);
+
+        // Gives 2d arraylist
+        List<List<String>> lines = new ArrayList<>();
+        Scanner inputStream = null;
+        try {
+            inputStream = new Scanner(file);
+            while(inputStream.hasNext()){
+                String line= inputStream.next();
+                String[] values = line.split(",");
+                // this adds the currently parsed line to the 2-dimensional string array
+                lines.add(Arrays.asList(values));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            inputStream.close();
+        }
+//        //Loop through arraylist
+//        for (int i = 0; i < lines.size(); i++) {
+//            for (int j = 0; i < lines.get(i).size(); i++) {
+//                //Do some stuff
+//            }
+//        }
+
+        return lines;
     }
 
 }
