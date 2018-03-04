@@ -6,10 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 
@@ -18,13 +17,15 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.io.IOException;
 
-import javafx.scene.control.Alert;
-
 public class IndexController {
     @FXML
     TextField caloriesText, fatText, satFatText, carbsText, sugarText, fibreText, proteinText, saltText;
     @FXML
     Button sampleFoodButton;
+    @FXML
+    TableView table;
+
+    Stage window;
 
     public void submitData(ActionEvent event) throws IOException {
 
@@ -43,26 +44,26 @@ public class IndexController {
         //More efficient way of adding all the text boxes here, maybe need to rethink the data structure used
         //TODO try to find a better way of validating input here
         //Checking whether any of the inputs are null, if they are, display error message/prompt
-        //TODO exception occurs somehwere after this point
-        if (!(caloriesText.getText().equals("") || fatText.getText().equals("")|| satFatText.getText().equals("")|| carbsText.getText().equals("")
-                || sugarText.getText().equals("")|| fibreText.getText().equals("")|| proteinText.getText().equals("")
-                || saltText.getText().equals("")))
-        {
-            //TODO change these to Doubles as it's likely there will be some decimal point numbers inputted.
-            try {
-                //varibles for easy access
-                cals = Double.parseDouble(caloriesText.getText());
-                fat = Double.parseDouble(fatText.getText());
-                satFat = Double.parseDouble(satFatText.getText());
-                carbs = Double.parseDouble(carbsText.getText());
-                sugar = Double.parseDouble(sugarText.getText());
-                fibre = Double.parseDouble(fibreText.getText());
-                protein = Double.parseDouble(proteinText.getText());
-                salt = Double.parseDouble(saltText.getText());
-                breakdown.add(cals);
-                breakdown.add(fat);
-                breakdown.add(satFat);
-                breakdown.add(carbs);
+                //TODO exception occurs somewhere after this point
+                if (!(caloriesText.getText().equals("") || fatText.getText().equals("")|| satFatText.getText().equals("")|| carbsText.getText().equals("")
+                        || sugarText.getText().equals("")|| fibreText.getText().equals("")|| proteinText.getText().equals("")
+                        || saltText.getText().equals("")))
+                {
+                    //TODO change these to Doubles as it's likely there will be some decimal point numbers inputted.
+                    try {
+                        //varibles for easy access
+                        cals = Double.parseDouble(caloriesText.getText());
+                        fat = Double.parseDouble(fatText.getText());
+                        satFat = Double.parseDouble(satFatText.getText());
+                        carbs = Double.parseDouble(carbsText.getText());
+                        sugar = Double.parseDouble(sugarText.getText());
+                        fibre = Double.parseDouble(fibreText.getText());
+                        protein = Double.parseDouble(proteinText.getText());
+                        salt = Double.parseDouble(saltText.getText());
+                        breakdown.add(cals);
+                        breakdown.add(fat);
+                        breakdown.add(satFat);
+                        breakdown.add(carbs);
                 breakdown.add(sugar);
                 breakdown.add(fibre);
                 breakdown.add(protein);
@@ -77,8 +78,10 @@ public class IndexController {
                 System.out.println(g.getMessage());
             }
 
+            //TODO add a food name input box and then take a foodname into this constructor instead of a string
+            String jacksGay = "Jack's packing god dammit";
             //Creation of new food item
-            newFoodItem = new FoodItem(cals, fat, satFat, carbs, sugar, fibre, protein, salt);
+            newFoodItem = new FoodItem(jacksGay, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
 
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
@@ -114,6 +117,48 @@ public class IndexController {
 
     public void sampleFoods() {
         try{
+            //Creation of rows for the table
+            TableColumn<FoodItem, String> nameColumn = new TableColumn<>("Food Name");
+            nameColumn.setMinWidth(200);
+            nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("itemName"));
+            //Calories
+            TableColumn<FoodItem, Double> calsColumn = new TableColumn<>("Calories");
+            calsColumn.setMinWidth(100);
+            calsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCals"));
+            //Fat
+            TableColumn<FoodItem, Double> fatColumn = new TableColumn<>("Fat");
+            fatColumn.setMinWidth(100);
+            fatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFat"));
+            //Saturated Fat
+            TableColumn<FoodItem, Double> satFatColumn = new TableColumn<>("Saturated Fat");
+            satFatColumn.setMinWidth(100);
+            satFatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSatFat"));
+            //Carbohydrates
+            TableColumn<FoodItem, Double> carbsColumn = new TableColumn<>("Carbohydrates");
+            carbsColumn.setMinWidth(100);
+            carbsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCarbs"));
+            //Sugars
+            TableColumn<FoodItem, Double> sugarsColumn = new TableColumn<>("Sugars");
+            sugarsColumn.setMinWidth(100);
+            sugarsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSugar"));
+            //Fibre
+            TableColumn<FoodItem, Double> fibreColumn = new TableColumn<>("Fibre");
+            fibreColumn.setMinWidth(100);
+            fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
+            //Protein
+            TableColumn<FoodItem, Double> proteinColumn = new TableColumn<>("Protein");
+            proteinColumn.setMinWidth(100);
+            proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
+            //Salt
+            TableColumn<FoodItem, Double> saltColumn = new TableColumn<>("Salt");
+            saltColumn.setMinWidth(100);
+            saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
+
+            table = new TableView<>();
+            table.setItems(getFoodItem()); //Returns an observable list of items
+            table.getColumns().addAll(nameColumn, calsColumn, fatColumn, satFatColumn, carbsColumn, sugarsColumn, fibreColumn, proteinColumn, saltColumn); //Adds all the columns to the table
+
+
             Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
             sampleFoodButton.getScene().setRoot(root); //TODO null pointer
         } catch (IOException e) {
@@ -125,38 +170,23 @@ public class IndexController {
     public ObservableList<FoodItem> getFoodItem() {
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
+        //Opens the csv file and begins to work through it creating FoodItem objects on the fly
+        File file = new File("C:\\Users\\Connor\\Desktop\\Third-year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
 
-        return storedFoodItems;
-    }
-
-    //Function for parsing csv files
-    public static List<List<String>> csvParser(String filePath) {
-        File file= new File(filePath);
-
-        // Gives 2d arraylist
-        List<List<String>> lines = new ArrayList<>();
         Scanner inputStream = null;
         try {
             inputStream = new Scanner(file);
-            while(inputStream.hasNext()){
-                String line= inputStream.next();
+            while (inputStream.hasNext()) {
+                String line = inputStream.next();
                 String[] values = line.split(",");
-                // this adds the currently parsed line to the 2-dimensional string array
-                lines.add(Arrays.asList(values));
+                storedFoodItems.add(new FoodItem(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[2]), Double.parseDouble(values[3]), Double.parseDouble(values[4]),
+                        Double.parseDouble(values[5]), Double.parseDouble(values[6]), Double.parseDouble(values[7]), Double.parseDouble(values[8])));
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            inputStream.close();
         }
-//        //Loop through arraylist
-//        for (int i = 0; i < lines.size(); i++) {
-//            for (int j = 0; i < lines.get(i).size(); i++) {
-//                //Do some stuff
-//            }
-//        }
-
-        return lines;
+        return storedFoodItems;
     }
+
 
 }
