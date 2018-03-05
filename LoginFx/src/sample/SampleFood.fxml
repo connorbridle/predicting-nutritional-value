@@ -4,20 +4,20 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExampleFoodDB">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExampleFoodDB">
    <children>
       <TableView fx:id="table" layoutX="1.0" prefHeight="400.0" prefWidth="600.0">
         <columns>
-          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="C1" />
-          <TableColumn fx:id="calsColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="fatColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="satFatColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="carbsColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="sugarsColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="fibreColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="proteinColumn" prefWidth="59.0" text="C2" />
-            <TableColumn fx:id="saltColumn" prefWidth="59.0" text="C2" />
+          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+          <TableColumn fx:id="calsColumn" prefWidth="59.0" text="Calories" />
+            <TableColumn fx:id="fatColumn" prefWidth="59.0" text="Fat" />
+            <TableColumn fx:id="satFatColumn" prefWidth="59.0" text="Sat-Fat" />
+            <TableColumn fx:id="carbsColumn" prefWidth="59.0" text="Carbs" />
+            <TableColumn fx:id="sugarsColumn" prefWidth="59.0" text="Sugars" />
+            <TableColumn fx:id="fibreColumn" prefWidth="59.0" text="Fibre" />
+            <TableColumn fx:id="proteinColumn" prefWidth="59.0" text="Protein" />
+            <TableColumn fx:id="saltColumn" prefWidth="59.0" text="Salt" />
+            <TableColumn fx:id="buttonColumn" prefWidth="59.0" text="Load" />
         </columns>
       </TableView>
    </children>

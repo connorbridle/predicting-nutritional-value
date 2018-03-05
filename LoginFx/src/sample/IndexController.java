@@ -171,7 +171,7 @@ public class IndexController {
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("C:\\Users\\Connor\\Desktop\\Third-year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
+        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
 
         Scanner inputStream = null;
         try {
