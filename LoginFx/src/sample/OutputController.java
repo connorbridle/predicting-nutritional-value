@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ public class OutputController {
     @FXML private Label fibreLabel;
     @FXML private Label proteinLabel;
     @FXML private Label saltLabel;
+    @FXML private Button submitButton;
 
     //Variables that hold the summed intake of all macro-nutrients
     public static double totalIntakeCal= 0.0;
@@ -85,7 +87,7 @@ public class OutputController {
         int sugarsScore = calculateSugarsScore(inputtedFoodItem.getItemSugar(), currentRow);
         int fibreScore = calculateFibreScore(inputtedFoodItem.getItemFibre(), currentRow);
         int proteinScore = calculateProteinScore(inputtedFoodItem.getItemProtein(), currentRow);
-        int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium());
+        int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium(), currentRow);
         System.out.println("Sat fat score:" + satFatScore);
 
 
@@ -98,7 +100,8 @@ public class OutputController {
 
         if (overRDA(output)) {
             foodItemDecision = 1; //Equivalent to saying that the decision is red/no
-            outputRedDecision();
+            outputRedDecision(new DecisionObject(new FoodItem("Jeff", RDA_CALS, RDA_FAT, RDA_SATFAT,RDA_CARBS,
+                    RDA_SUGARS,RDA_FIBRE,RDA_PROTEIN,RDA_SALT), 5)); //TODO change this
             System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
@@ -178,6 +181,16 @@ public class OutputController {
     private static int calculateFatScore(double fat, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = (fat / (Double.parseDouble(currentRow.get(2))) ) * 100;
+
+        //Eatwell guide measures
+        if (fat >= 21){
+            //Classed as high fat content by the eat-well guide
+        } else if (fat >= 4 && fat <= 20) {
+            //Classed as medium fat content per 100g by the eat-well guide
+        } else if (fat <= 3) {
+            //Classed as a low fat content item per 100g by the eat-well guide
+        }
+
         int returnScore = (int)percentage;
         return returnScore;
     }
@@ -187,6 +200,14 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
 
+        //Eat-well guide measures
+        if (satFat >= 5) {
+            //Classed as high satfat content per 100g by the eat-well guide
+        } else if (satFat > 1.5 && satFat < 5) {
+            //Classed as medium fat content per 100g by the eat-well guide
+        } else if (satFat <= 1.5) {
+            //Classed as low fat content per 100g by the eat-well guide
+        }
         int returnScore = (int)percentage;
         return returnScore;
     }
@@ -204,6 +225,15 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (sugars / (Double.parseDouble(currentRow.get(5))) ) * 100;
         int returnScore = (int)percentage;
+
+        //Eat-well guide measures
+        if (sugars > 15) {
+            //Classed as a high sugar content item per 100g by the eat-well guide
+        } else if (sugars <=15 && sugars >=6) {
+            //Classed as a medium sugar content item per 100g by the eat-well guide
+        } else if (sugars < 6) {
+            //Classed as a low sugar content item per 100g by the eat-well guide
+        }
         return returnScore;
     }
 
@@ -219,27 +249,59 @@ public class OutputController {
     private static int calculateProteinScore(double protein, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (protein / (Double.parseDouble(currentRow.get(7))) ) * 100;
+
+        //If the protein is above 30g in a single meal, body might not be able to absorb it all
+        if (protein > 30) {
+
+        }
         return 5;
     }
 
     //Calculates a score for the fibre contained in the food item
-    private static int calculateSaltScore(double salt) {
+    private static int calculateSaltScore(double salt, List<String> currentRow) {
+        //First thing to do is to find what percentage the inputted value is compared to the rda
+        double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
+
+        //Eat-well guide measures
+        if (salt > 1.5) {
+            //Classed as high a salt content item per 100g by the eat-well guide
+        } else if (salt <= 1.5 && salt >= 0.3) {
+            //Classed as a medium salt content item per 100g by the eat-well guide
+        } else if (salt < 0.3) {
+            //Classed as a low salt content item per 100g by the eat-well guide
+        }
+
         return 5;
     }
 
     //Function that outputs a no decision from the algorithm
-    private static void outputRedDecision() {
-
+    private void outputRedDecision(DecisionObject decisionMade) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("RedResultOuput.fxml"));
+            submitButton.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Function that outputs a maybe decision from the algorithm
-    private static void outputAmberDecision() {
-
+    private void outputAmberDecision(DecisionObject decisionMade) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("AmberResultOutput.fxml"));
+            submitButton.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Function that outputs a yes decision from the algorithm
-    private static void outputGreenDecision() {
-
+    private void outputGreenDecision(DecisionObject decisionMade) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("GreenResultOutput.fxml"));
+            submitButton.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static int returnRowIndex(int age) {
