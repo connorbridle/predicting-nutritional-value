@@ -48,7 +48,7 @@ public class ExampleFoodDB implements Initializable{
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("C:\\Users\\Connor\\Desktop\\Third-year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
+        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
 
         Scanner inputStream = null;
         try {
@@ -67,7 +67,7 @@ public class ExampleFoodDB implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(storedFoodItems.get(0).getName());
+        System.out.println(storedFoodItems.get(0).getItemName());
         System.out.println(storedFoodItems.get(0).getItemFat());
         System.out.println(storedFoodItems.get(0).getItemSatFat());
         return storedFoodItems;
@@ -76,15 +76,21 @@ public class ExampleFoodDB implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("itemName"));
-        calsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCals"));
-        fatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFat"));
-        satFatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSatFat"));
-        carbsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCarbs"));
-        sugarsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSugar"));
-        fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
-        proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
-        saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
-        table.setItems(getFoodItem());
-    }
+        try {
+            //Sets up the columns in the table
+            nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("itemName"));
+            calsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCals"));
+            fatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFat"));
+            satFatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSatFat"));
+            carbsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCarbs"));
+            sugarsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSugar"));
+            fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
+            proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
+            saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
+            table.setItems(getFoodItem());
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            System.out.println("GDFDFGDSGDGdSGSDg ded");
+        }
+        }
 }

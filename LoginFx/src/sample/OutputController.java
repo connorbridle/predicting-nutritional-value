@@ -11,10 +11,7 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class OutputController {
 
@@ -59,6 +56,39 @@ public class OutputController {
     private static int rowIndex = 0;
     private static int inputtedAge = 25; //TODO Testing variable, delete when done
 
+    //Score array to hold all the scores for the individual macros
+    private static int overallScore = 100;
+    private static int[] score = new int[8];
+
+    //Int used in the overRDA function, to hold the index of the responsible marco
+    private static int macroFailIndex;
+
+    //Lists to hold any comments made by the score methods for more user involvement
+    private static ArrayList<String> calsComments;
+    private static ArrayList<String> fatComments;
+    private static ArrayList<String> satFatComments;
+    private static ArrayList<String> carbsComments;
+    private static ArrayList<String> sugarsComments;
+    private static ArrayList<String> fibreComments;
+    private static ArrayList<String> proteinComments;
+    private static ArrayList<String> saltComments;
+    private static ArrayList<String> generalComments;
+
+    //Output DecisionObject and foodItem
+    private static FoodItem outputFoodItem;
+    private static DecisionObject outputDecisionObject;
+
+    public static Date date = new Date();
+    public static Calendar calendar = GregorianCalendar.getInstance();
+
+    //TODO remove these after i'm finished and user the above objects instead
+    //Testing DecisionObject and FoodItem that will be removed later
+    FoodItem testingFoodItem = new FoodItem("TestingNAme", RDA_CALS, RDA_FAT, RDA_SATFAT, RDA_CARBS, RDA_SUGARS, RDA_FIBRE,
+            RDA_PROTEIN, RDA_SALT);
+    DecisionObject testingDecision = new DecisionObject(testingFoodItem, score, overallScore, calsComments, fatComments,
+            satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
+
+
     //All of the above might be redundant after using the csv file data structure
     List<List<String>> maleRDA;
     String maleRDAFilePath = "/Users/connorbridle/Desktop/Third-Year-Project/typ/LoginFx/src/sample/Males_Datastructure.csv";
@@ -98,13 +128,22 @@ public class OutputController {
                 RDA_FIBRE, RDA_PROTEIN, RDA_SALT};
         double[] output = populateMeasurementArray(measurementArray, measurementRDA);
 
+        //If overRDA in any of the macros, no need to do any further calculations
         if (overRDA(output)) {
+            populateComments(macroFailIndex); //Populates the relevant comments array with suitable notification to user
             foodItemDecision = 1; //Equivalent to saying that the decision is red/no
-            outputRedDecision(new DecisionObject(new FoodItem("Jeff", RDA_CALS, RDA_FAT, RDA_SATFAT,RDA_CARBS,
-                    RDA_SUGARS,RDA_FIBRE,RDA_PROTEIN,RDA_SALT), 5)); //TODO change this
+            outputRedDecision(testingDecision); //TODO change this to output the proper decision object
             System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
+//            int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
+//            int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
+//            int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
+//            int carbsScore = calculateCarbsScore(inputtedFoodItem.getItemCarbs(), currentRow);
+//            int sugarsScore = calculateSugarsScore(inputtedFoodItem.getItemSugar(), currentRow);
+//            int fibreScore = calculateFibreScore(inputtedFoodItem.getItemFibre(), currentRow);
+//            int proteinScore = calculateProteinScore(inputtedFoodItem.getItemProtein(), currentRow);
+//            int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium(), currentRow);
         }
     }
 
@@ -127,12 +166,51 @@ public class OutputController {
         return myArray;
     }
 
+    //Function that consolidates and constructs the final decision object that will be fed to the next controller
+    private static void constructDecisionObject() {
+        outputDecisionObject = new DecisionObject(outputFoodItem, score, overallScore, calsComments, fatComments,
+                satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
+    }
+
+    //Function that deals with adding comments if any of the macros are over the RDAs
+    private static void populateComments(int failIndex) {
+        switch (failIndex) {
+            case 0:
+                calsComments.add("Your daily calorie intake is over governments recommended daily allowance!");
+                break;
+            case 1:
+                fatComments.add("Your daily fat intake is over governments recommended daily allowance");
+                break;
+            case 2:
+                satFatComments.add("Your daily saturated-fat intake is over governments recommended daily allowance");
+                break;
+            case 3:
+                carbsComments.add("Your daily carbohydrates intake is over governments recommended daily allowance");
+                break;
+            case 4:
+                sugarsComments.add("Your daily sugars intake is over governments recommended daily allowance");
+                break;
+            case 5:
+                fibreComments.add("Your daily fibre intake is over governments recommended daily allowance");
+                break;
+            case 6:
+                proteinComments.add("Your daily protein intake is over governments recommended daily allowance");
+                break;
+            case 7:
+                saltComments.add("Your daily salt intake is over governments recommended daily allowance");
+                break;
+
+        }
+    }
+
     //Function that checks whether or not any items are 1. In other words, if any of the macro-nutrients are over the RDA
     private static boolean overRDA(double[] inputArray) {
         //Loops array and looks for '1'
         System.out.println(Arrays.toString(inputArray));
         for (int i = 0; i < inputArray.length; i++) {
+            //Returns true as soon as a 1 was found
             if(inputArray[i] == 1) {
+                macroFailIndex = i;
                 return true;
             }
         }
@@ -174,6 +252,14 @@ public class OutputController {
     private static int calculateCaloriesScore(double cals, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
+
+        //Large food intake before bed could lead to obesity
+        calendar.setTime(date);
+        int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
+        if (currentTime > 21 && cals < 250) {
+            calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
+                    "risk of obesity");
+        }
         return 5;
     }
 
@@ -185,10 +271,16 @@ public class OutputController {
         //Eatwell guide measures
         if (fat >= 21){
             //Classed as high fat content by the eat-well guide
+            fatComments.add("Eatwell guide suggests fat content of 21g or higher per 100g of food is " +
+                    "considered high intake.");
         } else if (fat >= 4 && fat <= 20) {
             //Classed as medium fat content per 100g by the eat-well guide
+            fatComments.add("Eatwell guide suggests fat content more than 4g and less than 20g per 100g of food" +
+                    "is a medium fat content.");
         } else if (fat <= 3) {
             //Classed as a low fat content item per 100g by the eat-well guide
+            fatComments.add("Eatwell guide suggests fat content less than or equal to 3g per 100g of food is" +
+                    "considered low intake.");
         }
 
         int returnScore = (int)percentage;
@@ -203,10 +295,16 @@ public class OutputController {
         //Eat-well guide measures
         if (satFat >= 5) {
             //Classed as high satfat content per 100g by the eat-well guide
+            satFatComments.add("Eatwell guide suggests saturated-fat content more than 5g per 100g of food" +
+                    "is considered high intake.");
         } else if (satFat > 1.5 && satFat < 5) {
             //Classed as medium fat content per 100g by the eat-well guide
+            satFatComments.add("Eatwell guide suggests saturated-fat content between 1.5g and 5g per 100g of" +
+                    "food is considered medium content");
         } else if (satFat <= 1.5) {
             //Classed as low fat content per 100g by the eat-well guide
+            satFatComments.add("Eatwell guide suggests saturated-fat content less than or equal to 1.5g per " +
+                    "100g of food is considered low intake.");
         }
         int returnScore = (int)percentage;
         return returnScore;
@@ -229,11 +327,25 @@ public class OutputController {
         //Eat-well guide measures
         if (sugars > 15) {
             //Classed as a high sugar content item per 100g by the eat-well guide
+            sugarsComments.add("Eatwell guide suggests sugar content higher than 15g per 100g of food item is " +
+                    "considered high intake.");
         } else if (sugars <=15 && sugars >=6) {
             //Classed as a medium sugar content item per 100g by the eat-well guide
+            sugarsComments.add("Eatwell guide suggests sugar content between 6g and 15g per 100g of food item " +
+                    "is considered medium intake.");
         } else if (sugars < 6) {
             //Classed as a low sugar content item per 100g by the eat-well guide
+            sugarsComments.add("Eatwell guide suggests sugar content less than 6g per 100g of food item " +
+                    "is considered low intake.");
         }
+
+        //Eating sugar at night may prevent you from sleeping
+        calendar.setTime(date);
+        int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
+        if (currentTime > 21) {
+            sugarsComments.add("Eating sugar close to when you sleep is shown to keep you awake.");
+        }
+
         return returnScore;
     }
 
@@ -252,7 +364,8 @@ public class OutputController {
 
         //If the protein is above 30g in a single meal, body might not be able to absorb it all
         if (protein > 30) {
-
+            proteinComments.add("Consuming more than 30g of protein in one sitting has been proven to be " +
+                    "pointless as the excess is excreted as waste product");
         }
         return 5;
     }
@@ -261,14 +374,23 @@ public class OutputController {
     private static int calculateSaltScore(double salt, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
+        double score = 0.0;
 
         //Eat-well guide measures
         if (salt > 1.5) {
             //Classed as high a salt content item per 100g by the eat-well guide
+            saltComments.add("Eatwell guide suggests salt content higher than 1.5g per 100g of food item " +
+                    "is considered high intake.");
+            score += 10;
         } else if (salt <= 1.5 && salt >= 0.3) {
             //Classed as a medium salt content item per 100g by the eat-well guide
+            saltComments.add("Eatwell guide suggests salt content between 0.3g and 1.5g per 100g of food item " +
+                    "is considered medium intake.");
+            score += 5;
         } else if (salt < 0.3) {
             //Classed as a low salt content item per 100g by the eat-well guide
+            saltComments.add("Eatwell guide suggests salt content lower than 0.3g per 100g of food item " +
+                    "is considered low intake");
         }
 
         return 5;

@@ -8,8 +8,8 @@
    <children>
       <TableView fx:id="table" layoutX="1.0" prefHeight="400.0" prefWidth="600.0">
         <columns>
-          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-          <TableColumn fx:id="calsColumn" prefWidth="59.0" text="Calories" />
+            <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+            <TableColumn fx:id="calsColumn" prefWidth="59.0" text="Calories" />
             <TableColumn fx:id="fatColumn" prefWidth="59.0" text="Fat" />
             <TableColumn fx:id="satFatColumn" prefWidth="59.0" text="Sat-Fat" />
             <TableColumn fx:id="carbsColumn" prefWidth="59.0" text="Carbs" />

@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class FoodItem {
     //Class that deals with all the pre-stored food items that may not have a food table
-    private static SimpleStringProperty itemName;
-    private static SimpleDoubleProperty itemCals, itemFat, itemSatFat, itemCarbs, itemSugar, itemFibre, itemProtein, itemSodium;
+    public final SimpleStringProperty itemName;
+    public final SimpleDoubleProperty itemCals, itemFat, itemSatFat, itemCarbs, itemSugar, itemFibre, itemProtein, itemSodium;
 
     //Constructor
     public FoodItem(String name, double calories, double fat, double satFat, double carbs, double sugars, double fibre,
@@ -23,15 +23,12 @@ public class FoodItem {
     }
 
     //Get methods for the private variables
-    public static String getName() {
-        return itemName.get();
-    }
 
-    public static double getItemCals() {
+    public double getItemCals() {
         return itemCals.get();
     }
 
-    public static double getItemCarbs() {
+    public double getItemCarbs() {
         return itemCarbs.get();
     }
 
@@ -39,27 +36,31 @@ public class FoodItem {
         return itemFat.get();
     }
 
-    public static double getItemFibre() {
+    public double getItemFibre() {
         return itemFibre.get();
     }
 
-    public static double getItemProtein() {
+    public double getItemProtein() {
         return itemProtein.get();
     }
 
-    public static double getItemSatFat() {
+    public double getItemSatFat() {
         return itemSatFat.get();
     }
 
-    public static double getItemSodium() {
+    public double getItemSodium() {
         return itemSodium.get();
     }
 
-    public static double getItemSugar() {
+    public double getItemSugar() {
         return itemSugar.get();
     }
 
-//    public static void setItemCals(double itemCals) {
+    public String getItemName() {
+        return itemName.get();
+    }
+
+    //    public static void setItemCals(double itemCals) {
 //        FoodItem.itemCals.get() = itemCals;
 //    }
 //

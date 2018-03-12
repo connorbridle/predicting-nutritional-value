@@ -7,7 +7,14 @@ public class TestingClass {
 
     public static void main(String[] args) {
 //        ArrayList<double[]> myArrayList = readRDADataStructure("/Users/connorbridle/Desktop/Third-Year-Project/typ/LoginFx/src/sample/Females_Datastructure.csv");
-        csvParser();
+
+        //Eating sugar at night may prevent you from sleeping
+        Date date = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        System.out.println(calendar.get(Calendar.HOUR_OF_DAY)); //RETURNS THE Current hour of day
+        int time = calendar.get(Calendar.HOUR_OF_DAY);
+        System.out.println(time);
     }
 
 

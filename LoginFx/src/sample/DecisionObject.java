@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class DecisionObject {
     private FoodItem foodItem;
-    private int score;
+    private int[] individualScore;
+    private int overallScore;
     private ArrayList<String> calsComments;
     private ArrayList<String> fatComments;
     private ArrayList<String> satFatComments;
@@ -15,9 +16,23 @@ public class DecisionObject {
     private ArrayList<String> saltComments;
     private ArrayList<String> generalCommentsComments;
 
-    public DecisionObject(FoodItem foodItem, int score) {
+    public DecisionObject(FoodItem foodItem, int[] individualScore, int overallScore, ArrayList<String> calsComments,
+                          ArrayList<String> fatComments, ArrayList<String> satFatComments, ArrayList<String> carbsComments,
+                          ArrayList<String> sugarsComments, ArrayList<String> fibreComments,
+                          ArrayList<String> proteinComments, ArrayList<String> saltComments,
+                          ArrayList<String> generalCommentsComments) {
         this.foodItem = foodItem;
-        this.score = score;
+        this.individualScore = individualScore;
+        this.overallScore = overallScore;
+        this.calsComments = calsComments;
+        this.fatComments = fatComments;
+        this.satFatComments = satFatComments;
+        this.carbsComments = carbsComments;
+        this.sugarsComments = sugarsComments;
+        this.fibreComments = fibreComments;
+        this.proteinComments = proteinComments;
+        this.saltComments = saltComments;
+        this.generalCommentsComments = generalCommentsComments;
     }
 
     public void setFoodItem(FoodItem foodItem) {
@@ -25,7 +40,7 @@ public class DecisionObject {
     }
 
     public void setScore(int score) {
-        this.score = score;
+        this.overallScore = score;
     }
 
     public FoodItem getFoodItem() {
@@ -33,7 +48,7 @@ public class DecisionObject {
     }
 
     public int getScore() {
-        return score;
+        return overallScore;
     }
 
     public ArrayList<String> getCalsComments() {
@@ -71,4 +86,9 @@ public class DecisionObject {
     public ArrayList<String> getGeneralCommentsComments() {
         return generalCommentsComments;
     }
+
+    public int[] getIndividualScore() {
+        return individualScore;
+    }
 }
+
