@@ -38,6 +38,8 @@ public class ExampleFoodDB implements Initializable{
     private TableColumn<FoodItem, Double> proteinColumn;
     @FXML
     private TableColumn<FoodItem, Double> saltColumn;
+    @FXML
+    private TableColumn buttonColumn;
 
     public void sampleFoods() {
 
@@ -87,6 +89,7 @@ public class ExampleFoodDB implements Initializable{
             fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
             proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
             saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
+            buttonColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
             table.setItems(getFoodItem());
         } catch (IllegalStateException e) {
             e.printStackTrace();
