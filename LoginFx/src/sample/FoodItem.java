@@ -2,11 +2,13 @@ package sample;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Button;
 
 public class FoodItem {
     //Class that deals with all the pre-stored food items that may not have a food table
     public final SimpleStringProperty itemName;
     public final SimpleDoubleProperty itemCals, itemFat, itemSatFat, itemCarbs, itemSugar, itemFibre, itemProtein, itemSodium;
+    private Button button;
 
     //Constructor
     public FoodItem(String name, double calories, double fat, double satFat, double carbs, double sugars, double fibre,
@@ -20,6 +22,7 @@ public class FoodItem {
         itemFibre = new SimpleDoubleProperty(fibre);
         itemProtein = new SimpleDoubleProperty(protein);
         itemSodium = new SimpleDoubleProperty(sodium);
+        this.button = new Button("Select Item");
     }
 
     //Get methods for the private variables
@@ -60,40 +63,48 @@ public class FoodItem {
         return itemName.get();
     }
 
-    //    public static void setItemCals(double itemCals) {
-//        FoodItem.itemCals.get() = itemCals;
-//    }
-//
-//    public static void setItemCarbs(double itemCarbs) {
-//        FoodItem.itemCarbs = itemCarbs;
-//    }
-//
-//    public static void setItemFat(double itemFat) {
-//        FoodItem.itemFat = itemFat;
-//    }
-//
-//    public static void setItemFibre(double itemFibre) {
-//        FoodItem.itemFibre = itemFibre;
-//    }
-//
-//    public static void setItemName(String itemName) {
-//        FoodItem.itemName = itemName;
-//    }
-//
-//    public static void setItemProtein(double itemProtein) {
-//        FoodItem.itemProtein = itemProtein;
-//    }
-//
-//    public static void setItemSatFat(double itemSatFat) {
-//        FoodItem.itemSatFat = itemSatFat;
-//    }
-//
-//    public static void setItemSodium(double itemSodium) {
-//        FoodItem.itemSodium = itemSodium;
-//    }
-//
-//    public static void setItemSugar(double itemSugar) {
-//        FoodItem.itemSugar = itemSugar;
-//    }
+    public Button getButton() {
+        return button;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName.set(itemName);
+    }
+
+    public void setItemCals(double itemCals) {
+        this.itemCals.set(itemCals);
+    }
+
+    public void setItemFat(double itemFat) {
+        this.itemFat.set(itemFat);
+    }
+
+    public void setItemSatFat(double itemSatFat) {
+        this.itemSatFat.set(itemSatFat);
+    }
+
+    public void setItemCarbs(double itemCarbs) {
+        this.itemCarbs.set(itemCarbs);
+    }
+
+    public void setItemSugar(double itemSugar) {
+        this.itemSugar.set(itemSugar);
+    }
+
+    public void setItemFibre(double itemFibre) {
+        this.itemFibre.set(itemFibre);
+    }
+
+    public void setItemProtein(double itemProtein) {
+        this.itemProtein.set(itemProtein);
+    }
+
+    public void setItemSodium(double itemSodium) {
+        this.itemSodium.set(itemSodium);
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
+    }
 }
 

@@ -27,6 +27,21 @@ public class IndexController {
 
     Stage window;
 
+    //FoodItem variable that will hold the loaded food item
+    FoodItem loadedItem = null;
+
+    public void loadFoodItem(FoodItem food) {
+        loadedItem = food;
+        caloriesText.setText(Double.toString(loadedItem.itemCals.get()));
+        fatText.setText(Double.toString(loadedItem.itemFat.get()));
+        satFatText.setText(Double.toString(loadedItem.itemSatFat.get()));
+        carbsText.setText(Double.toString(loadedItem.itemCarbs.get()));
+        sugarText.setText(Double.toString(loadedItem.itemSugar.get()));
+        fibreText.setText(Double.toString(loadedItem.itemFibre.get()));
+        proteinText.setText(Double.toString(loadedItem.itemProtein.get()));
+        saltText.setText(Double.toString(loadedItem.itemSodium.get()));
+    }
+
     public void submitData(ActionEvent event) throws IOException {
 
         //Array will always be structured in the following order: [calories][fat][satfat][carbs][sugars][fibre][protein][salt][others]
@@ -171,7 +186,7 @@ public class IndexController {
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
+        File file = new File("C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
 
         Scanner inputStream = null;
         try {

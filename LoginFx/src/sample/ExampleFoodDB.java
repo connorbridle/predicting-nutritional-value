@@ -2,13 +2,19 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +46,8 @@ public class ExampleFoodDB implements Initializable{
     private TableColumn<FoodItem, Double> saltColumn;
     @FXML
     private TableColumn buttonColumn;
+    @FXML
+    private Button SubmitFoodButton;
 
     public void sampleFoods() {
 
@@ -50,7 +58,7 @@ public class ExampleFoodDB implements Initializable{
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
+        File file = new File("C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
 
         Scanner inputStream = null;
         try {
@@ -89,11 +97,36 @@ public class ExampleFoodDB implements Initializable{
             fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
             proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
             saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
-            buttonColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+            buttonColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("button"));
             table.setItems(getFoodItem());
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            System.out.println("GDFDFGDSGDGdSGSDg ded");
+            System.out.println("ded");
         }
+    }
+
+    @FXML
+    private void submitFoodItemButton(ActionEvent event) {
+        FoodItem foodItemVariable = table.getItems().get(table.getSelectionModel().getFocusedIndex()); //Stores the selected food item in a variable
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("index.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            IndexController controller = loader.getController();
+            controller.loadFoodItem(foodItemVariable);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Food item advice");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+    }
+
 }

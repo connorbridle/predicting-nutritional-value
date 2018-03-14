@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExampleFoodDB">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExampleFoodDB">
    <children>
-      <TableView fx:id="table" layoutX="1.0" prefHeight="400.0" prefWidth="600.0">
+      <TableView fx:id="table" layoutX="90.0" layoutY="54.0" prefHeight="400.0" prefWidth="600.0">
         <columns>
             <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
             <TableColumn fx:id="calsColumn" prefWidth="59.0" text="Calories" />
@@ -20,5 +23,11 @@
             <TableColumn fx:id="buttonColumn" prefWidth="59.0" text="Load" />
         </columns>
       </TableView>
+      <Button fx:id="SubmitFoodButton" layoutX="317.0" layoutY="510.0" mnemonicParsing="false" onAction="#submitFoodItemButton" text="Load selected Food Item" />
+      <Text fill="#ee2c2c" layoutX="301.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Database">
+         <font>
+            <Font size="27.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
