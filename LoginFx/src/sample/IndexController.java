@@ -23,6 +23,8 @@ public class IndexController {
     @FXML
     Button sampleFoodButton;
     @FXML
+    Button informationButton;
+    @FXML
     TableView table;
 
     Stage window;
@@ -30,6 +32,7 @@ public class IndexController {
     //FoodItem variable that will hold the loaded food item
     FoodItem loadedItem = null;
 
+    //Function that loads the food item from the ExampleFoodDB.java file into the current input boxes
     public void loadFoodItem(FoodItem food) {
         loadedItem = food;
         caloriesText.setText(Double.toString(loadedItem.itemCals.get()));
@@ -40,6 +43,19 @@ public class IndexController {
         fibreText.setText(Double.toString(loadedItem.itemFibre.get()));
         proteinText.setText(Double.toString(loadedItem.itemProtein.get()));
         saltText.setText(Double.toString(loadedItem.itemSodium.get()));
+    }
+
+    //Function that displays a popup box, telling the user
+    public void displayInformation(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Input information");
+        alert.setHeaderText("Information regarding using this tool");
+        alert.setContentText("All inputs should be formatted in the per 100g of food item variant, not the" +
+                " total macro-nutrient value that is contained within the food item" + "\n\n" +  "All fields must be " +
+                "filled out, so food items that don't contain any of a specific macro-nutrient should be inputted" +
+                " as a '0' value." + "\n\n");
+
+        alert.showAndWait();
     }
 
     public void submitData(ActionEvent event) throws IOException {

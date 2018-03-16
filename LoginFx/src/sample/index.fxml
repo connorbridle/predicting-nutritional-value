@@ -33,5 +33,6 @@
       <JFXButton layoutX="329.0" layoutY="399.0" onAction="#submitData" ripplerFill="#e80c0c" text="Submit Breakdown JFX" />
       <JFXButton fx:id="sampleFoodButton" buttonType="RAISED" layoutX="14.0" layoutY="64.0" onAction="#sampleFoods" text="Load Sample Food" />
       <JFXButton layoutX="29.0" layoutY="100.0" text="Start new day" />
+      <Button fx:id="informationButton" layoutX="638.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayInformation" text="Input information" />
    </children>
 </AnchorPane>
