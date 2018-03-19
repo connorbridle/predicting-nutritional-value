@@ -45,8 +45,6 @@ public class ExampleFoodDB implements Initializable{
     @FXML
     private TableColumn<FoodItem, Double> saltColumn;
     @FXML
-    private TableColumn buttonColumn;
-    @FXML
     private Button SubmitFoodButton;
 
     public void sampleFoods() {
@@ -58,7 +56,7 @@ public class ExampleFoodDB implements Initializable{
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
+        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
 
         Scanner inputStream = null;
         try {
@@ -89,7 +87,6 @@ public class ExampleFoodDB implements Initializable{
             fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
             proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
             saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
-            buttonColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("button"));
             table.setItems(getFoodItem());
         } catch (IllegalStateException e) {
             e.printStackTrace();

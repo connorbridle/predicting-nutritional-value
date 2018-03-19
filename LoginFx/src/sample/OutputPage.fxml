@@ -86,7 +86,7 @@
       </GridPane>
       <ButtonBar layoutX="423.0" layoutY="428.0" prefHeight="65.0" prefWidth="344.0">
         <buttons>
-            <Button mnemonicParsing="false" onAction="#seeResults" prefHeight="46.0" prefWidth="107.0" text="See results" />
+            <Button fx:id="submitButton" mnemonicParsing="false" onAction="#seeResults" prefHeight="46.0" prefWidth="107.0" text="See results" />
             <Button minWidth="30.0" mnemonicParsing="false" onAction="#returnToStart" prefHeight="45.0" prefWidth="217.0" text="Restart" />
         </buttons>
       </ButtonBar>

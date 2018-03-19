@@ -128,20 +128,18 @@ public class IndexController {
                 System.out.println(g.getMessage());
             }
 
-            //TODO add a food name input box and then take a foodname into this constructor instead of a string
-            String jackfag = "Jack's packing god dammit";
             //Creation of new food item
             newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
 
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
+            loader.setLocation(getClass().getResource("OutputPage.fxml"));
             Parent outputView = loader.load();
 
             //Parse and store the food item into the csv file of stored food items
-            parseFoodItem(name, breakdown, "C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\recordedFoodsToday.csv");
+            parseFoodItem(name, breakdown, "/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
 
             //access the controller and call the method
-            RedResultController controller = loader.getController();
+            OutputController controller = loader.getController();
             controller.startPrediction(newFoodItem);
 
             Scene newScene = new Scene(outputView);
@@ -222,7 +220,7 @@ public class IndexController {
     //Function that clears all the information currently held in the recordedFoodsToday.csv file
     public void clearFoodStorage(ActionEvent event) {
         try {
-            FileWriter filewr = new FileWriter("C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\recordedFoodsToday.csv");
+            FileWriter filewr = new FileWriter("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("IOException! Please report to appropriate team member");
@@ -256,7 +254,7 @@ public class IndexController {
         ObservableList<FoodItem> storedFoodItems = FXCollections.observableArrayList(); //Holds all the food items read from csv file
 
         //Opens the csv file and begins to work through it creating FoodItem objects on the fly
-        File file = new File("C:\\Users\\Connor\\Desktop\\Third-Year-project\\typ\\LoginFx\\src\\sample\\food_samples.csv");
+        File file = new File("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/food_samples.csv");
 
         Scanner inputStream = null;
         try {

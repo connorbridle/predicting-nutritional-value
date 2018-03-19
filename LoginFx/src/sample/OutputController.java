@@ -15,7 +15,6 @@ import java.util.*;
 
 public class OutputController {
 
-    FoodItem currentFoodItem;
 
     @FXML private Label calsLabel;
     @FXML private Label fatLabel;
@@ -31,22 +30,22 @@ public class OutputController {
     public static double totalIntakeCal= 0.0;
     public static double totalIntakeFat= 0.0;
     public static double totalIntakeSatFat= 0.0;
-    public static double totalIntakeCarbs= 500;
+    public static double totalIntakeCarbs= 0.0;
     public static double totalIntakeSugars= 0.0;
-    public static double totalIntakeFibre= 500;
+    public static double totalIntakeFibre= 0.0;
     public static double totalIntakeProtein= 0.0;
     public static double totalIntakeSalt = 0.0;
 
     //TODO remove this as it's redundant now
     //Variables that hold the RDA of all the macro-nutrients
-    private final static double RDA_CALS = 150;
-    private final static double RDA_FAT = 150;
-    private final static double RDA_SATFAT = 150;
-    private final static double RDA_CARBS = 150;
-    private final static double RDA_SUGARS = 150;
-    private final static double RDA_FIBRE = 150;
-    private final static double RDA_PROTEIN = 150;
-    private final static double RDA_SALT = 150;
+    private static double RDA_CALS = 150;
+    private static double RDA_FAT = 150;
+    private static double RDA_SATFAT = 150;
+    private static double RDA_CARBS = 150;
+    private static double RDA_SUGARS = 150;
+    private static double RDA_FIBRE = 150;
+    private static double RDA_PROTEIN = 150;
+    private static double RDA_SALT = 150;
     private static double currentIntake = 0;
 
     //Variable that holds the value of a decision (1=Red, 2=Amber, 3=Green)
@@ -57,22 +56,22 @@ public class OutputController {
     private static int inputtedAge = 25; //TODO Testing variable, delete when done
 
     //Score array to hold all the scores for the individual macros
-    private static int overallScore = 100;
+    private static int overallScore = 0;
     private static int[] score = new int[8];
 
     //Int used in the overRDA function, to hold the index of the responsible marco
     private static int macroFailIndex;
 
     //Lists to hold any comments made by the score methods for more user involvement
-    private static ArrayList<String> calsComments;
-    private static ArrayList<String> fatComments;
-    private static ArrayList<String> satFatComments;
-    private static ArrayList<String> carbsComments;
-    private static ArrayList<String> sugarsComments;
-    private static ArrayList<String> fibreComments;
-    private static ArrayList<String> proteinComments;
-    private static ArrayList<String> saltComments;
-    private static ArrayList<String> generalComments;
+    private static ArrayList<String> calsComments = new ArrayList<>();
+    private static ArrayList<String> fatComments = new ArrayList<>();
+    private static ArrayList<String> satFatComments = new ArrayList<>();
+    private static ArrayList<String> carbsComments = new ArrayList<>();
+    private static ArrayList<String> sugarsComments = new ArrayList<>();
+    private static ArrayList<String> fibreComments = new ArrayList<>();
+    private static ArrayList<String> proteinComments = new ArrayList<>();
+    private static ArrayList<String> saltComments = new ArrayList<>();
+    private static ArrayList<String> generalComments = new ArrayList<>();
 
     //Output DecisionObject and foodItem
     private static FoodItem outputFoodItem;
@@ -99,14 +98,16 @@ public class OutputController {
 
     //Main function that communicates with the other feeder functions
     public void startPrediction(FoodItem inputtedFoodItem) {
-        currentFoodItem = inputtedFoodItem;
-        System.out.println("GOT FOOD ITEM: " + currentFoodItem.getItemFat());
+        System.out.println("START PREDICTION CALLED");
+        outputFoodItem = inputtedFoodItem;
+        System.out.println("GOT FOOD ITEM: " + outputFoodItem.getItemCals() + outputFoodItem.getItemFat() +
+        outputFoodItem.getItemSatFat());
 
         //Fills 2d array list with csv values
         //TODO if the person is male, parse male csv, if female parse female csv
         maleRDA = csvParser(maleRDAFilePath);
         femaleRDA = csvParser(femaleRDAFilePath);
-        rowIndex = returnRowIndex(inputtedAge); //Calculates the row index
+        rowIndex = returnRowIndex(inputtedAge); //TODO age input
         currentRow = maleRDA.get(rowIndex);
 
         //Pass the values contained to the various score methods
@@ -118,12 +119,34 @@ public class OutputController {
         int fibreScore = calculateFibreScore(inputtedFoodItem.getItemFibre(), currentRow);
         int proteinScore = calculateProteinScore(inputtedFoodItem.getItemProtein(), currentRow);
         int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium(), currentRow);
-        System.out.println("Sat fat score:" + satFatScore);
+        overallScore = calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
+                fibreScore + proteinScore + saltScore;
 
+        //Assigning the RDA values from the current row of the csv file
+        RDA_CALS = Double.parseDouble(currentRow.get(1));
+        RDA_FAT = Double.parseDouble(currentRow.get(2));
+        RDA_SATFAT = Double.parseDouble(currentRow.get(3));
+        RDA_CARBS = Double.parseDouble(currentRow.get(4));
+        RDA_SUGARS = Double.parseDouble(currentRow.get(5));
+        RDA_FIBRE = Double.parseDouble(currentRow.get(6));
+        RDA_PROTEIN = Double.parseDouble(currentRow.get(7));
+        RDA_SALT = Double.parseDouble(currentRow.get(8));
+        System.out.println(currentRow);
+        System.out.println(RDA_CALS);
 
+        //Increment the total variables with the new food item inputted
+        totalIntakeCal += inputtedFoodItem.getItemCals();
+        totalIntakeFat += inputtedFoodItem.getItemFat();
+        totalIntakeSatFat += inputtedFoodItem.getItemSatFat();
+        totalIntakeCarbs += inputtedFoodItem.getItemCarbs();
+        totalIntakeSugars += inputtedFoodItem.getItemSugar();
+        totalIntakeFibre += inputtedFoodItem.getItemFibre();
+        totalIntakeProtein += inputtedFoodItem.getItemProtein();
+        totalIntakeSalt += inputtedFoodItem.getItemSodium();
 
         double[] measurementArray = {totalIntakeCal,totalIntakeFat,totalIntakeSatFat,totalIntakeCarbs,totalIntakeSugars,
                 totalIntakeFibre,totalIntakeProtein,totalIntakeSalt};
+        //TODO make this read from the appropiate value from the csv file
         double[] measurementRDA = {RDA_CALS, RDA_FAT, RDA_SATFAT, RDA_CARBS, RDA_SUGARS,
                 RDA_FIBRE, RDA_PROTEIN, RDA_SALT};
         double[] output = populateMeasurementArray(measurementArray, measurementRDA);
@@ -136,6 +159,7 @@ public class OutputController {
             System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
+            makeFinalDecision(overallScore, outputDecisionObject);
 //            int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
 //            int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
 //            int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
@@ -170,6 +194,25 @@ public class OutputController {
     private static void constructDecisionObject() {
         outputDecisionObject = new DecisionObject(outputFoodItem, score, overallScore, calsComments, fatComments,
                 satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
+    }
+
+    //Function that makes the final decision based on an inputted score variable
+    private void makeFinalDecision(int score, DecisionObject object) {
+        //TODO maybe remove score and object here and replace them with global static variables
+        System.out.println("MAKE FINAL DECISION FUNCTION SCORE: " + score);
+        if (overallScore < 100) {
+            //Output decision green
+            System.out.println("SCORE LESS THAN 100: OUTPUT GREEN");
+            outputGreenDecision(object);
+        } else if (overallScore < 200 && score > 100) {
+            //Output decision amber
+            System.out.println("SCORE BETWEEN 100 AND 200: OUTPUT AMBER");
+            outputAmberDecision(object);
+        } else {
+            //Output decision red
+            System.out.println("ELSE: OUTPUT RED");
+            outputRedDecision(object);
+        }
     }
 
     //Function that deals with adding comments if any of the macros are over the RDAs
@@ -249,9 +292,11 @@ public class OutputController {
     //TODO need to implement all the methods that will calculate the individul scores and influence what is placed on the screen in results
     //TODO might be better to have all these functions as a single one, and pass in the food item value and rda for each
     //Calculates a score for the calories contained in the food item
+
     private static int calculateCaloriesScore(double cals, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
+        int returnScore = (int)percentage;
 
         //Large food intake before bed could lead to obesity
         calendar.setTime(date);
@@ -260,13 +305,14 @@ public class OutputController {
             calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
                     "risk of obesity");
         }
-        return 5;
+        return returnScore;
     }
 
     //Calculates a score for the fat contained in the food item
     private static int calculateFatScore(double fat, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = (fat / (Double.parseDouble(currentRow.get(2))) ) * 100;
+        int returnScore = (int)percentage;
 
         //Eatwell guide measures
         if (fat >= 21){
@@ -282,8 +328,6 @@ public class OutputController {
             fatComments.add("Eatwell guide suggests fat content less than or equal to 3g per 100g of food is" +
                     "considered low intake.");
         }
-
-        int returnScore = (int)percentage;
         return returnScore;
     }
 
@@ -291,7 +335,7 @@ public class OutputController {
     private static int calculateSatFatScore(double satFat, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
-
+        int score = (int)percentage;
         //Eat-well guide measures
         if (satFat >= 5) {
             //Classed as high satfat content per 100g by the eat-well guide
@@ -319,6 +363,7 @@ public class OutputController {
     }
 
     //Calculates a score for the sugars contained in the food item
+    //MAX SCORE = 100% +10
     private static int calculateSugarsScore(double sugars, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (sugars / (Double.parseDouble(currentRow.get(5))) ) * 100;
@@ -371,10 +416,11 @@ public class OutputController {
     }
 
     //Calculates a score for the fibre contained in the food item
+    //MAX SCORE = 100% + 10
     private static int calculateSaltScore(double salt, List<String> currentRow) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
-        double score = 0.0;
+        int score = (int)percentage;
 
         //Eat-well guide measures
         if (salt > 1.5) {
@@ -393,13 +439,14 @@ public class OutputController {
                     "is considered low intake");
         }
 
-        return 5;
+        return score;
     }
 
     //Function that outputs a no decision from the algorithm
     private void outputRedDecision(DecisionObject decisionMade) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("RedResultOuput.fxml"));
+            System.out.println("Outputting red decision");
             submitButton.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
