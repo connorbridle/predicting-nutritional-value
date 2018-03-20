@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -18,18 +20,20 @@ public class AmberResultController {
 
     @FXML
     FoodItem inputtedFoodItem;
+    @FXML
+    Button continueButton;
 
     @FXML
     public void continueToResults(ActionEvent event) {
         try {
-            Parent resultsContinueView = FXMLLoader.load(getClass().getResource("OutputPage.fxml"));
-            Scene newScene = new Scene(resultsContinueView);
-            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Results");
-            primaryStage.setScene(newScene);
-            primaryStage.show();
+            Parent root = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
+            continueButton.getScene().setRoot(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("IOException caught!");
+            alert.setHeaderText("Input-Output Exception!");
+            alert.setContentText("An input-output exception was thrown and caught by the program.");
+            alert.showAndWait();
         }
     }
 

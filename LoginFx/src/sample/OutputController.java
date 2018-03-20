@@ -38,14 +38,14 @@ public class OutputController {
 
     //TODO remove this as it's redundant now
     //Variables that hold the RDA of all the macro-nutrients
-    private static double RDA_CALS = 150;
-    private static double RDA_FAT = 150;
-    private static double RDA_SATFAT = 150;
-    private static double RDA_CARBS = 150;
-    private static double RDA_SUGARS = 150;
-    private static double RDA_FIBRE = 150;
-    private static double RDA_PROTEIN = 150;
-    private static double RDA_SALT = 150;
+    private static double RDA_CALS = 0;
+    private static double RDA_FAT = 0;
+    private static double RDA_SATFAT = 0;
+    private static double RDA_CARBS = 0;
+    private static double RDA_SUGARS = 0;
+    private static double RDA_FIBRE = 0;
+    private static double RDA_PROTEIN = 0;
+    private static double RDA_SALT = 0;
     private static double currentIntake = 0;
 
     //Variable that holds the value of a decision (1=Red, 2=Amber, 3=Green)
@@ -84,7 +84,8 @@ public class OutputController {
     //Testing DecisionObject and FoodItem that will be removed later
     FoodItem testingFoodItem = new FoodItem("TestingNAme", RDA_CALS, RDA_FAT, RDA_SATFAT, RDA_CARBS, RDA_SUGARS, RDA_FIBRE,
             RDA_PROTEIN, RDA_SALT);
-    DecisionObject testingDecision = new DecisionObject(testingFoodItem, score, overallScore, calsComments, fatComments,
+    //TODO change this from amber
+    DecisionObject testingDecision = new DecisionObject("amber", testingFoodItem, score, overallScore, calsComments, fatComments,
             satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
 
 
@@ -96,12 +97,18 @@ public class OutputController {
     List<String> currentRow;
 
 
-    //Main function that communicates with the other feeder functions
-    public void startPrediction(FoodItem inputtedFoodItem) {
-        System.out.println("START PREDICTION CALLED");
+    //================================================================================
+    // Function that takes in the objects from IndexController
+    //================================================================================
+    public void storeObjectInputs(FoodItem inputtedFoodItem) {
         outputFoodItem = inputtedFoodItem;
-        System.out.println("GOT FOOD ITEM: " + outputFoodItem.getItemCals() + outputFoodItem.getItemFat() +
-        outputFoodItem.getItemSatFat());
+    }
+
+    //================================================================================
+    // Main function that communicates with the other feeder functions
+    //================================================================================
+    public void startPrediction() {
+//        outputFoodItem = inputtedFoodItem;
 
         //Fills 2d array list with csv values
         //TODO if the person is male, parse male csv, if female parse female csv
@@ -111,14 +118,14 @@ public class OutputController {
         currentRow = maleRDA.get(rowIndex);
 
         //Pass the values contained to the various score methods
-        int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
-        int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
-        int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
-        int carbsScore = calculateCarbsScore(inputtedFoodItem.getItemCarbs(), currentRow);
-        int sugarsScore = calculateSugarsScore(inputtedFoodItem.getItemSugar(), currentRow);
-        int fibreScore = calculateFibreScore(inputtedFoodItem.getItemFibre(), currentRow);
-        int proteinScore = calculateProteinScore(inputtedFoodItem.getItemProtein(), currentRow);
-        int saltScore = calculateSaltScore(inputtedFoodItem.getItemSodium(), currentRow);
+        int calsScore = calculateCaloriesScore(outputFoodItem.getItemCals(), currentRow);
+        int fatScore = calculateFatScore(outputFoodItem.getItemFat(), currentRow);
+        int satFatScore = calculateSatFatScore(outputFoodItem.getItemSatFat(), currentRow);
+        int carbsScore = calculateCarbsScore(outputFoodItem.getItemCarbs(), currentRow);
+        int sugarsScore = calculateSugarsScore(outputFoodItem.getItemSugar(), currentRow);
+        int fibreScore = calculateFibreScore(outputFoodItem.getItemFibre(), currentRow);
+        int proteinScore = calculateProteinScore(outputFoodItem.getItemProtein(), currentRow);
+        int saltScore = calculateSaltScore(outputFoodItem.getItemSodium(), currentRow);
         overallScore = calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
                 fibreScore + proteinScore + saltScore;
 
@@ -135,14 +142,14 @@ public class OutputController {
         System.out.println(RDA_CALS);
 
         //Increment the total variables with the new food item inputted
-        totalIntakeCal += inputtedFoodItem.getItemCals();
-        totalIntakeFat += inputtedFoodItem.getItemFat();
-        totalIntakeSatFat += inputtedFoodItem.getItemSatFat();
-        totalIntakeCarbs += inputtedFoodItem.getItemCarbs();
-        totalIntakeSugars += inputtedFoodItem.getItemSugar();
-        totalIntakeFibre += inputtedFoodItem.getItemFibre();
-        totalIntakeProtein += inputtedFoodItem.getItemProtein();
-        totalIntakeSalt += inputtedFoodItem.getItemSodium();
+        totalIntakeCal += outputFoodItem.getItemCals();
+        totalIntakeFat += outputFoodItem.getItemFat();
+        totalIntakeSatFat += outputFoodItem.getItemSatFat();
+        totalIntakeCarbs += outputFoodItem.getItemCarbs();
+        totalIntakeSugars += outputFoodItem.getItemSugar();
+        totalIntakeFibre += outputFoodItem.getItemFibre();
+        totalIntakeProtein += outputFoodItem.getItemProtein();
+        totalIntakeSalt += outputFoodItem.getItemSodium();
 
         double[] measurementArray = {totalIntakeCal,totalIntakeFat,totalIntakeSatFat,totalIntakeCarbs,totalIntakeSugars,
                 totalIntakeFibre,totalIntakeProtein,totalIntakeSalt};
@@ -192,7 +199,8 @@ public class OutputController {
 
     //Function that consolidates and constructs the final decision object that will be fed to the next controller
     private static void constructDecisionObject() {
-        outputDecisionObject = new DecisionObject(outputFoodItem, score, overallScore, calsComments, fatComments,
+        //TODO change decision object
+        outputDecisionObject = new DecisionObject("amber", outputFoodItem, score, overallScore, calsComments, fatComments,
                 satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
     }
 
@@ -496,12 +504,6 @@ public class OutputController {
         } finally {
             inputStream.close();
         }
-//        //Loop through arraylist
-//        for (int i = 0; i < lines.size(); i++) {
-//            for (int j = 0; i < lines.get(i).size(); i++) {
-//                //Do some stuff
-//            }
-//        }
 
         return lines;
     }

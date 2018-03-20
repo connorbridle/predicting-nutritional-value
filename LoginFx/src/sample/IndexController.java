@@ -29,9 +29,9 @@ public class IndexController {
     Button todaysFood;
     @FXML
     Button clearDay;
-//    TableView table;
+    @FXML
+    Button submitButton;
 
-    Stage window;
 
     //FoodItem variable that will hold the loaded food item
     FoodItem loadedItem = null;
@@ -73,6 +73,7 @@ public class IndexController {
         }
     }
 
+    //When the submit button is clicked, this function is called
     public void submitData(ActionEvent event) throws IOException {
 
         //Array will always be structured in the following order: [calories][fat][satfat][carbs][sugars][fibre][protein][salt][others]
@@ -91,7 +92,6 @@ public class IndexController {
         double salt = 0;
 
         //More efficient way of adding all the text boxes here, maybe need to rethink the data structure used
-        //TODO try to find a better way of validating input here
         //Checking whether any of the inputs are null, if they are, display error message/prompt
                 if (!(caloriesText.getText().equals("") || fatText.getText().equals("")|| satFatText.getText().equals("")|| carbsText.getText().equals("")
                         || sugarText.getText().equals("")|| fibreText.getText().equals("")|| proteinText.getText().equals("")
@@ -122,10 +122,18 @@ public class IndexController {
 
             } catch (InputMismatchException e) {
                 System.out.println("Error: Input mismatch!");
-                System.out.println(e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Input mismatch error!");
+                alert.setHeaderText("Input mismatch error");
+                alert.setContentText("Please ensure correct input on all boxes");
+                alert.showAndWait();
             } catch (NumberFormatException g) {
                 System.out.println("Error: Number format expection!");
-                System.out.println(g.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Number format error!");
+                alert.setHeaderText("Number input error");
+                alert.setContentText("Please ensure all inputs are numerical values");
+                alert.showAndWait();
             }
 
             //Creation of new food item
@@ -140,7 +148,7 @@ public class IndexController {
 
             //access the controller and call the method
             OutputController controller = loader.getController();
-            controller.startPrediction(newFoodItem);
+            controller.storeObjectInputs(newFoodItem);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -160,6 +168,8 @@ public class IndexController {
         doSomeStuff(breakdown);
     }
 
+
+
     private static void doSomeStuff(ArrayList<Double> input) {
         for (int i = 0; i < input.size(); i++) {
             System.out.println(input.get(i));
@@ -168,48 +178,6 @@ public class IndexController {
 
     public void sampleFoods() {
         try{
-//            //Creation of rows for the table
-//            TableColumn<FoodItem, String> nameColumn = new TableColumn<>("Food Name");
-//            nameColumn.setMinWidth(200);
-//            nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("itemName"));
-//            //Calories
-//            TableColumn<FoodItem, Double> calsColumn = new TableColumn<>("Calories");
-//            calsColumn.setMinWidth(100);
-//            calsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCals"));
-//            //Fat
-//            TableColumn<FoodItem, Double> fatColumn = new TableColumn<>("Fat");
-//            fatColumn.setMinWidth(100);
-//            fatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFat"));
-//            //Saturated Fat
-//            TableColumn<FoodItem, Double> satFatColumn = new TableColumn<>("Saturated Fat");
-//            satFatColumn.setMinWidth(100);
-//            satFatColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSatFat"));
-//            //Carbohydrates
-//            TableColumn<FoodItem, Double> carbsColumn = new TableColumn<>("Carbohydrates");
-//            carbsColumn.setMinWidth(100);
-//            carbsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemCarbs"));
-//            //Sugars
-//            TableColumn<FoodItem, Double> sugarsColumn = new TableColumn<>("Sugars");
-//            sugarsColumn.setMinWidth(100);
-//            sugarsColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSugar"));
-//            //Fibre
-//            TableColumn<FoodItem, Double> fibreColumn = new TableColumn<>("Fibre");
-//            fibreColumn.setMinWidth(100);
-//            fibreColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemFibre"));
-//            //Protein
-//            TableColumn<FoodItem, Double> proteinColumn = new TableColumn<>("Protein");
-//            proteinColumn.setMinWidth(100);
-//            proteinColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemProtein"));
-//            //Salt
-//            TableColumn<FoodItem, Double> saltColumn = new TableColumn<>("Salt");
-//            saltColumn.setMinWidth(100);
-//            saltColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("itemSodium"));
-
-//            table = new TableView<>();
-//            table.setItems(getFoodItem()); //Returns an observable list of items
-//            table.getColumns().addAll(nameColumn, calsColumn, fatColumn, satFatColumn, carbsColumn, sugarsColumn, fibreColumn, proteinColumn, saltColumn); //Adds all the columns to the table
-
-
             Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
             sampleFoodButton.getScene().setRoot(root);
         } catch (IOException e) {

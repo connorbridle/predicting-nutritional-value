@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="myPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.RedResultController">
+<BorderPane fx:id="myPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AmberResultController">
    <center>
       <AnchorPane maxHeight="500.0" maxWidth="800.0" minHeight="500.0" minWidth="800.0" prefHeight="500.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
@@ -28,7 +28,7 @@
                   <Font size="36.0" />
                </font>
             </Label>
-            <JFXButton layoutX="379.0" layoutY="452.0" onAction="#continueToResults" style="-fx-background-color: FF795C#FF795C;" text="Continue" />
+            <JFXButton fx:id="continueButton" layoutX="379.0" layoutY="452.0" onAction="#continueToResults" style="-fx-background-color: FF795C#FF795C;" text="Continue" />
          </children>
       </AnchorPane>
    </center>

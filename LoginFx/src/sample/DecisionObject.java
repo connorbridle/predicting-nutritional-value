@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class DecisionObject {
     private FoodItem foodItem;
+    private String decisionString;
     private int[] individualScore;
     private int overallScore;
     private ArrayList<String> calsComments;
@@ -16,7 +17,8 @@ public class DecisionObject {
     private ArrayList<String> saltComments;
     private ArrayList<String> generalCommentsComments;
 
-    public DecisionObject(FoodItem foodItem, int[] individualScore, int overallScore, ArrayList<String> calsComments,
+    //TODO add decision string to the constructor
+    public DecisionObject(String decision, FoodItem foodItem, int[] individualScore, int overallScore, ArrayList<String> calsComments,
                           ArrayList<String> fatComments, ArrayList<String> satFatComments, ArrayList<String> carbsComments,
                           ArrayList<String> sugarsComments, ArrayList<String> fibreComments,
                           ArrayList<String> proteinComments, ArrayList<String> saltComments,
@@ -89,6 +91,14 @@ public class DecisionObject {
 
     public int[] getIndividualScore() {
         return individualScore;
+    }
+
+    public String getDecisionString() {
+        return decisionString;
+    }
+
+    public void setDecisionString(String decisionString) {
+        this.decisionString = decisionString;
     }
 }
 
