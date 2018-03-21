@@ -2,40 +2,92 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="500.0" maxWidth="800.0" minHeight="500.0" minWidth="800.0" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.IndexController">
 
-   <children>
-      <Label layoutX="277.0" layoutY="113.0" text="Enter Macronutrient Breakdown">
-         <font>
-            <Font size="18.0" />
-         </font></Label>
-      <Button fx:id="submitButton" layoutX="343.0" layoutY="446.0" mnemonicParsing="false" onAction="#submitData" text="Submit Breakdown" />
-      <Label layoutX="257.0" layoutY="64.0" prefHeight="53.0" prefWidth="314.0" text="Should I Eat This?" textFill="#b22626">
-         <font>
-            <Font size="36.0" />
-         </font>
-      </Label>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="60.0" layoutX="-1.0" layoutY="-9.0" stroke="DODGERBLUE" strokeType="INSIDE" width="814.0" />
-      <JFXTextField fx:id="caloriesText" layoutX="325.0" layoutY="180.0" promptText="Calories" />
-      <JFXTextField fx:id="fatText" layoutX="324.0" layoutY="205.0" promptText="Fat" />
-      <JFXTextField fx:id="satFatText" layoutX="325.0" layoutY="230.0" promptText="Saturated Fat" />
-      <JFXTextField fx:id="carbsText" layoutX="325.0" layoutY="255.0" promptText="Carbohydrates" />
-      <JFXTextField fx:id="sugarText" layoutX="325.0" layoutY="280.0" promptText="Sugars" />
-      <JFXTextField fx:id="fibreText" layoutX="325.0" layoutY="305.0" promptText="Fibre" />
-      <JFXTextField fx:id="proteinText" layoutX="324.0" layoutY="330.0" promptText="Protein" />
-      <JFXTextField fx:id="saltText" layoutX="324.0" layoutY="355.0" promptText="Salt" />
-      <JFXButton layoutX="329.0" layoutY="399.0" onAction="#submitData" ripplerFill="#e80c0c" text="Submit Breakdown JFX" />
-      <JFXButton fx:id="sampleFoodButton" buttonType="RAISED" layoutX="14.0" layoutY="64.0" onAction="#sampleFoods" text="Load Sample Food" />
-      <JFXButton layoutX="29.0" layoutY="100.0" text="Start new day" />
-      <Button fx:id="informationButton" layoutX="638.0" layoutY="14.0" mnemonicParsing="false" onAction="#displayInformation" text="Input information" />
-      <Button fx:id="todaysFood" layoutX="516.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadTodaysFood" text="View today's food" />
-      <JFXTextField fx:id="foodNameText" layoutX="324.0" layoutY="155.0" promptText="Food Name" />
-      <Button fx:id="clearDay" layoutX="404.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearFoodStorage" text="Clear days food" />
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="50.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.IndexController">
+   <top>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: #1e90ff#1e90ff;" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton text="Start new day">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="sampleFoodButton" buttonType="RAISED" onAction="#sampleFoods" text="Load Sample Food">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+            </JFXButton>
+            <Button fx:id="informationButton" mnemonicParsing="false" onAction="#displayInformation" text="Input information">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="todaysFood" mnemonicParsing="false" onAction="#loadTodaysFood" text="View today's food">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="clearDay" mnemonicParsing="false" onAction="#clearFoodStorage" text="Clear days food">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <bottom>
+      <Button fx:id="submitButton" mnemonicParsing="false" onAction="#submitData" text="Submit Breakdown" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin>
+      </Button>
+   </bottom>
+   <center>
+      <AnchorPane prefWidth="900.0" BorderPane.alignment="CENTER">
+      
+         <children>
+            <Label layoutX="326.0" layoutY="73.0" text="Enter Macronutrient Breakdown">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="304.0" layoutY="24.0" text="Should I Eat This?" textFill="#b22626">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <VBox layoutX="336.0" layoutY="98.0" prefHeight="85.0" prefWidth="237.0">
+               <children>
+                  <JFXTextField fx:id="caloriesText" promptText="Calories" />
+                  <JFXTextField fx:id="fatText" promptText="Fat" />
+                  <JFXTextField fx:id="satFatText" promptText="Saturated Fat" />
+                  <JFXTextField fx:id="carbsText" promptText="Carbohydrates" />
+                  <JFXTextField fx:id="sugarText" promptText="Sugars" />
+                  <JFXTextField fx:id="fibreText" promptText="Fibre" />
+                  <JFXTextField fx:id="proteinText" promptText="Protein" />
+                  <JFXTextField fx:id="saltText" promptText="Salt" />
+                  <JFXTextField fx:id="foodNameText" promptText="Food Name" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </AnchorPane>
+   </center>
+</BorderPane>
