@@ -36,6 +36,14 @@ public class IndexController {
     //FoodItem variable that will hold the loaded food item
     FoodItem loadedItem = null;
 
+    //ProfileObject variable that will hold any personal factors
+    ProfileObject person;
+
+    //Function that will load the ProfileObject from the previous stage
+    public void loadProfileObject(ProfileObject profile) {
+        person = profile;
+    }
+
     //Function that loads the food item from the ExampleFoodDB.java file into the current input boxes
     public void loadFoodItem(FoodItem food) {
         loadedItem = food;
@@ -139,6 +147,8 @@ public class IndexController {
             //Creation of new food item
             newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
 
+            //This section deals with calling the function of the other class and passing the relevant objects to said
+            //function
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("OutputPage.fxml"));
             Parent outputView = loader.load();

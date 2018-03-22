@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-
 import java.io.*;
 import java.util.*;
 
@@ -178,8 +177,6 @@ public class OutputController {
         }
     }
 
-    //TODO maybe can combine the overRDA and populateMeasurementArray so that as soon as one macro-nutrient is over RDA,
-    //TODO it stops populating the array and returns true.
 
     //Function that is used to measure whether the current intake is above the RDA. Returns an array filled with
     //either 1's or 0's. 1 meaning over RDA and 0 meaning under. Can then be used in the overRDA method

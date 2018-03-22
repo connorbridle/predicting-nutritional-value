@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.PersonalInputController">
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" layoutX="350.0" layoutY="75.0" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+               <children>
+                  <TextField fx:id="name" promptText="Name" />
+                  <TextField fx:id="age" promptText="Age" />
+                  <TextField />
+                  <ChoiceBox fx:id="goalCombo" prefWidth="150.0" />
+                  <ChoiceBox fx:id="activityCombo" prefWidth="150.0" />
+                  <ChoiceBox prefWidth="150.0" />
+               </children>
+            </VBox>
+         </children></AnchorPane>
    </center>
    <top>
       <HBox prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER" />
