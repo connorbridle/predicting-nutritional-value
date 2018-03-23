@@ -47,6 +47,9 @@ public class ExampleFoodDB implements Initializable{
     @FXML
     private Button SubmitFoodButton;
 
+    //Stores variable then passes it back
+    private ProfileObject person;
+
     public void sampleFoods() {
 
     }
@@ -94,6 +97,11 @@ public class ExampleFoodDB implements Initializable{
         }
     }
 
+    //Load data function
+    public void loadData(ProfileObject inputPerson) {
+        person = inputPerson;
+    }
+
     //Function that deals with the submit food item button. Opens a new index stage and then sends over the values to relevant controller
     @FXML
     private void submitFoodItemButton(ActionEvent event) {
@@ -106,6 +114,7 @@ public class ExampleFoodDB implements Initializable{
             //access the controller and call the method
             IndexController controller = loader.getController();
             controller.loadFoodItem(foodItemVariable);
+            controller.loadProfileObject(person);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

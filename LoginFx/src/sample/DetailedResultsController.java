@@ -11,6 +11,9 @@ import java.io.IOException;
 
 public class DetailedResultsController {
 
+    private FoodItem outputFoodItem;
+    private DecisionObject outputDecision;
+
     public void continueToNext(ActionEvent event) {
         try {
             Parent detailedViewNext = FXMLLoader.load(getClass().getResource("DetailedResults2.fxml"));
@@ -23,6 +26,11 @@ public class DetailedResultsController {
             System.out.println("Input output exception!");
             System.out.println(e.getStackTrace());
         }
+    }
+    //TODO add person object
+    public void storeValues(DecisionObject decision, FoodItem food) {
+        outputFoodItem = food;
+        outputDecision = decision;
     }
 
 }

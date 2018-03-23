@@ -14,12 +14,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class AmberResultController {
-
+    DecisionObject outputDecision;
     @FXML
     BorderPane myPane;
-
     @FXML
-    FoodItem inputtedFoodItem;
+    FoodItem outputFoodItem;
     @FXML
     Button continueButton;
 
@@ -37,7 +36,9 @@ public class AmberResultController {
         }
     }
 
-    public void startPrediction(FoodItem input) {
-        inputtedFoodItem = input;
+    //TODO add person object
+    public void storeValues(DecisionObject decision, FoodItem food) {
+        outputFoodItem = food;
+        outputDecision = decision;
     }
 }

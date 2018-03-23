@@ -32,18 +32,47 @@ public class IndexController {
     @FXML
     Button submitButton;
 
+    //Labels for the RDA
+    @FXML
+    Label calsLabel;
+    @FXML
+    Label fatLabel;
+    @FXML
+    Label satFatLabel;
+    @FXML
+    Label carbsLabel;
+    @FXML
+    Label sugarsLabel;
+    @FXML
+    Label fibreLabel;
+    @FXML
+    Label proteinLabel;
+    @FXML
+    Label saltLabel;
+
 
     //FoodItem variable that will hold the loaded food item
     FoodItem loadedItem = null;
 
     //ProfileObject variable that will hold any personal factors
-    ProfileObject person;
+    ProfileObject person = null;
 
     //Function that will load the ProfileObject from the previous stage
     public void loadProfileObject(ProfileObject profile) {
         person = profile;
+        System.out.println("INDEX CLASS: " + person.getTotalIntakeCal());
+        //Sets the values in the intake table to updated values
+        calsLabel.setText(Double.toString(person.getTotalIntakeCal()));
+        fatLabel.setText(Double.toString(person.getTotalIntakeFat()));
+        satFatLabel.setText(Double.toString(person.getTotalIntakeSatFat()));
+        carbsLabel.setText(Double.toString(person.getTotalIntakeCarbs()));
+        sugarsLabel.setText(Double.toString(person.getTotalIntakeSugars()));
+        fibreLabel.setText(Double.toString(person.getTotalIntakeFibre()));
+        proteinLabel.setText(Double.toString(person.getTotalIntakeProtein()));
+        saltLabel.setText(Double.toString(person.getTotalIntakeSalt()));
     }
 
+    //TODO fix null pointer, happens when this window is brough up and the profile object is lost
     //Function that loads the food item from the ExampleFoodDB.java file into the current input boxes
     public void loadFoodItem(FoodItem food) {
         loadedItem = food;
@@ -84,12 +113,13 @@ public class IndexController {
     //When the submit button is clicked, this function is called
     public void submitData(ActionEvent event) throws IOException {
 
+
         //Array will always be structured in the following order: [calories][fat][satfat][carbs][sugars][fibre][protein][salt][others]
         ArrayList<Double> breakdown = new ArrayList<>();
         FoodItem newFoodItem;
         String name = null;
-        //
 
+        //Variables that will be assigned from the user input
         double cals = 0;
         double fat = 0;
         double satFat = 0;
@@ -143,6 +173,17 @@ public class IndexController {
                 alert.setContentText("Please ensure all inputs are numerical values");
                 alert.showAndWait();
             }
+            //Add intake to profile totals
+            System.out.println("After" + person.getTotalIntakeCal());
+            person.sumTotalIntakeCals(cals);
+            System.out.println("Before" + person.getTotalIntakeCal());
+//            person.setTotalIntakeFat(fat);
+//            person.setTotalIntakeSatFat(satFat);
+//            person.setTotalIntakeCarbs(carbs);
+//            person.setTotalIntakeSugars(sugar);
+//            person.setTotalIntakeFibre(fibre);
+//            person.setTotalIntakeProtein(protein);
+//            person.setTotalIntakeSalt(salt);
 
             //Creation of new food item
             newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
@@ -158,7 +199,7 @@ public class IndexController {
 
             //access the controller and call the method
             OutputController controller = loader.getController();
-            controller.storeObjectInputs(newFoodItem);
+            controller.storeObjectInputs(newFoodItem,person);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -186,10 +227,26 @@ public class IndexController {
         }
     }
 
-    public void sampleFoods() {
+    public void sampleFoods(ActionEvent event) {
         try{
-            Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
-            sampleFoodButton.getScene().setRoot(root);
+//            Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
+//            sampleFoodButton.getScene().setRoot(root);
+            //New window code
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("SampleFood.fxml"));
+            Parent outputView = loader.load();
+
+
+            //access the controller and call the method
+            ExampleFoodDB controller = loader.getController();
+            controller.loadData(person);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Home");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
         }

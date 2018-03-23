@@ -14,7 +14,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class RedResultController {
-
+    FoodItem outputFoodItem;
+    DecisionObject outputDecision;
     @FXML
     BorderPane myPane;
 
@@ -37,7 +38,9 @@ public class RedResultController {
         }
     }
 
-    public void startPrediction(FoodItem foodItem) {
-        inputtedFoodItem = foodItem;
+    //TODO add person object
+    public void storeValues(DecisionObject decision, FoodItem food) {
+        outputFoodItem = food;
+        outputDecision = decision;
     }
 }

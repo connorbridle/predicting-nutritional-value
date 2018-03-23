@@ -14,6 +14,9 @@ public class GreenResultController {
     @FXML
     Button continueButton;
 
+    FoodItem outputFoodItem;
+    DecisionObject outputDecision;
+
     public void continueToResults(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
@@ -25,5 +28,11 @@ public class GreenResultController {
             alert.setContentText("An input-output exception was thrown and caught by the program.");
             alert.showAndWait();
         }
+    }
+
+    //TODO add person object
+    public void storeValues(DecisionObject decision, FoodItem food) {
+        outputFoodItem = food;
+        outputDecision = decision;
     }
 }

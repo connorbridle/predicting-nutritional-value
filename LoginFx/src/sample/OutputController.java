@@ -25,7 +25,7 @@ public class OutputController {
     @FXML private Label saltLabel;
     @FXML private Button submitButton;
 
-    //Variables that hold the summed intake of all macro-nutrients
+    //Variables that hold the current intake of all macro-nutrients
     public static double totalIntakeCal= 0.0;
     public static double totalIntakeFat= 0.0;
     public static double totalIntakeSatFat= 0.0;
@@ -75,6 +75,7 @@ public class OutputController {
     //Output DecisionObject and foodItem
     private static FoodItem outputFoodItem;
     private static DecisionObject outputDecisionObject;
+    private ProfileObject outputPerson;
 
     public static Date date = new Date();
     public static Calendar calendar = GregorianCalendar.getInstance();
@@ -99,16 +100,29 @@ public class OutputController {
     //================================================================================
     // Function that takes in the objects from IndexController
     //================================================================================
-    public void storeObjectInputs(FoodItem inputtedFoodItem) {
+    public void storeObjectInputs(FoodItem inputtedFoodItem, ProfileObject person) {
         outputFoodItem = inputtedFoodItem;
+        loadFoodItem(outputFoodItem);
+        outputPerson = person;
+    }
+
+    public void loadFoodItem(FoodItem input) {
+        calsLabel.setText(Double.toString(input.getItemCals()));
+        fatLabel.setText(Double.toString(input.getItemFat()));
+        satFatLabel.setText(Double.toString(input.getItemSatFat()));
+        carbsLabel.setText(Double.toString(input.getItemCarbs()));
+        sugarsLabel.setText(Double.toString(input.getItemSugar()));
+        fibreLabel.setText(Double.toString(input.getItemFibre()));
+        proteinLabel.setText(Double.toString(input.getItemProtein()));
+        saltLabel.setText(Double.toString(input.getItemSodium()));
     }
 
     //================================================================================
     // Main function that communicates with the other feeder functions
     //================================================================================
-    public void startPrediction() {
+    public void startPrediction(ActionEvent event) {
 //        outputFoodItem = inputtedFoodItem;
-
+        overallScore = 0;
         //Fills 2d array list with csv values
         //TODO if the person is male, parse male csv, if female parse female csv
         maleRDA = csvParser(maleRDAFilePath);
@@ -138,7 +152,6 @@ public class OutputController {
         RDA_PROTEIN = Double.parseDouble(currentRow.get(7));
         RDA_SALT = Double.parseDouble(currentRow.get(8));
         System.out.println(currentRow);
-        System.out.println(RDA_CALS);
 
         //Increment the total variables with the new food item inputted
         totalIntakeCal += outputFoodItem.getItemCals();
@@ -161,11 +174,11 @@ public class OutputController {
         if (overRDA(output)) {
             populateComments(macroFailIndex); //Populates the relevant comments array with suitable notification to user
             foodItemDecision = 1; //Equivalent to saying that the decision is red/no
-            outputRedDecision(testingDecision); //TODO change this to output the proper decision object
+            outputRedDecision(testingDecision, event); //TODO change this to output the proper decision object
             System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
-            makeFinalDecision(overallScore, outputDecisionObject);
+            makeFinalDecision(overallScore, outputDecisionObject, event);
 //            int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
 //            int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
 //            int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
@@ -201,22 +214,23 @@ public class OutputController {
                 satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
     }
 
+
     //Function that makes the final decision based on an inputted score variable
-    private void makeFinalDecision(int score, DecisionObject object) {
+    private void makeFinalDecision(int score, DecisionObject object, ActionEvent event) {
         //TODO maybe remove score and object here and replace them with global static variables
         System.out.println("MAKE FINAL DECISION FUNCTION SCORE: " + score);
         if (overallScore < 100) {
             //Output decision green
             System.out.println("SCORE LESS THAN 100: OUTPUT GREEN");
-            outputGreenDecision(object);
+            outputGreenDecision(object, event);
         } else if (overallScore < 200 && score > 100) {
             //Output decision amber
             System.out.println("SCORE BETWEEN 100 AND 200: OUTPUT AMBER");
-            outputAmberDecision(object);
+            outputAmberDecision(object, event);
         } else {
             //Output decision red
             System.out.println("ELSE: OUTPUT RED");
-            outputRedDecision(object);
+            outputRedDecision(object, event);
         }
     }
 
@@ -268,12 +282,20 @@ public class OutputController {
     //Function that takes you back to the starting point
     public void returnToStart(ActionEvent event) {
         try {
-            Parent returnView = FXMLLoader.load(getClass().getResource("index.fxml"));
-            Scene newScene = new Scene(returnView);
-            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("PersonalInput.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            PersonalInputController controller = loader.getController();
+            controller.loadDataBackIntoProfile(outputPerson);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
             primaryStage.setTitle("Home");
             primaryStage.setScene(newScene);
             primaryStage.show();
+            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -448,31 +470,63 @@ public class OutputController {
     }
 
     //Function that outputs a no decision from the algorithm
-    private void outputRedDecision(DecisionObject decisionMade) {
+    private void outputRedDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("RedResultOuput.fxml"));
-            System.out.println("Outputting red decision");
-            submitButton.getScene().setRoot(root);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
+            Parent outputView = loader.load();
+            //access the controller and call the method
+            RedResultController controller = loader.getController();
+            controller.storeValues(decisionMade, outputFoodItem);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Food item advice");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //Function that outputs a maybe decision from the algorithm
-    private void outputAmberDecision(DecisionObject decisionMade) {
+    private void outputAmberDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("AmberResultOutput.fxml"));
-            submitButton.getScene().setRoot(root);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("AmberResultOutput.fxml"));
+            Parent outputView = loader.load();
+            //access the controller and call the method
+            AmberResultController controller = loader.getController();
+            controller.storeValues(decisionMade, outputFoodItem);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Food item advice");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //Function that outputs a yes decision from the algorithm
-    private void outputGreenDecision(DecisionObject decisionMade) {
+    private void outputGreenDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("GreenResultOutput.fxml"));
-            submitButton.getScene().setRoot(root);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("GreenResultOutput.fxml"));
+            Parent outputView = loader.load();
+            //access the controller and call the method
+            GreenResultController controller = loader.getController();
+            controller.storeValues(decisionMade, outputFoodItem);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Food item advice");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
         }

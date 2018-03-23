@@ -44,8 +44,8 @@ public class PersonalInputController implements Initializable {
     @FXML
     public void continueToNext(ActionEvent event) {
         try {
-            //This section deals with calling the function of the other class and passing the relevant objects to said
-            //function
+            //This section deals with calling the function of the other class and passing the relevant objects
+            loadInputsToObject();
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("index.fxml"));
             Parent outputView = loader.load();
@@ -53,7 +53,7 @@ public class PersonalInputController implements Initializable {
 
             //access the controller and call the method
             IndexController controller = loader.getController();
-//            controller.loadProfileObject(new ProfileObject());
+            controller.loadProfileObject(outputProfile);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -62,50 +62,65 @@ public class PersonalInputController implements Initializable {
             primaryStage.show();
             //end new window code
         } catch (IOException e) {
-
+            e.printStackTrace();
+            System.out.println("IOexception thrown and caught!");
         }
     }
 
     //Function that loads all the user inputs into a ProfileObject
     private void loadInputsToObject() {
-        String inputName = name.getText();
-        int inputAge = Integer.parseInt(age.getText());
-        String inputGoal = goalCombo.getValue();
-        String inputActivity = activityCombo.getValue();
-        String inputGender = genderCombo.getValue();
-        ActivityLevel activity = null;
-        Gender gender = null;
-        Goal goal = null;
+        try {
+            String inputName = name.getText();
+            int inputAge = Integer.parseInt(age.getText());
+            String inputGoal = goalCombo.getValue();
+//            String inputActivity = activityCombo.getValue();
+//            String inputGender = genderCombo.getValue();
+            ActivityLevel activity = null;
+            Gender gender = null;
+            Goal goal = null;
 
-        //switch statements that deal with the enums
-        //Gender
-        switch (inputGender) {
-            case "Male": gender = Gender.MALE;
-                    break;
-            case "Female": gender = Gender.FEMALE;
-                    break;
-            case "Other": gender = Gender.OTHER;
+            //switch statements that deal with the enums
+            //Gender
+//            switch (inputGender) {
+//                case "Male":
+//                    gender = Gender.MALE;
+//                    break;
+//                case "Female":
+//                    gender = Gender.FEMALE;
+//                    break;
+//                case "Other":
+//                    gender = Gender.OTHER;
+//            }
+//            //Goal
+//            switch (inputGoal) {
+//                case "Lose":
+//                    goal = Goal.LOSE;
+//                    break;
+//                case "Maintain":
+//                    goal = Goal.MAINTAIN;
+//                    break;
+//                case "Gain":
+//                    goal = Goal.GAIN;
+//                    break;
+//            }
+//            //Activity
+//            switch (inputActivity) {
+//                case "Low":
+//                    activity = ActivityLevel.LOW;
+//                    break;
+//                case "Medium":
+//                    activity = ActivityLevel.MEDIUM;
+//                    break;
+//                case "High":
+//                    activity = ActivityLevel.HIGH;
+//                    break;
+//            }
+            outputProfile = new ProfileObject(inputName,inputAge, gender, activity, goal);
         }
-        //Goal
-        switch (inputGoal) {
-            case "Lose": goal = Goal.LOSE;
-                    break;
-            case "Maintain": goal = Goal.MAINTAIN;
-                    break;
-            case "Gain": goal = Goal.GAIN;
-                    break;
+        catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println("Number format exception!");
         }
-        //Activity
-        switch (inputActivity) {
-            case "Low": activity = ActivityLevel.LOW;
-                    break;
-            case "Medium": activity = ActivityLevel.MEDIUM;
-                    break;
-            case "High": activity = ActivityLevel.HIGH;
-                    break;
-        }
-
-        outputProfile = new ProfileObject(inputName,inputAge, gender, activity, goal);
 
     }
 
@@ -127,7 +142,9 @@ public class PersonalInputController implements Initializable {
 
     }
 
-    private void loadDataIntoChoiceBox() {
-
+    //TODO fix this, not passing the correct number TESTING CAL: n -> INDEX CLASS 0
+    public void loadDataBackIntoProfile(ProfileObject person) {
+        outputProfile = person;
+        System.out.println("TESTING CAL" + outputProfile.getTotalIntakeCal());
     }
 }
