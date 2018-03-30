@@ -52,10 +52,10 @@ public class IndexController {
 
 
     //FoodItem variable that will hold the loaded food item
-    FoodItem loadedItem = null;
+    static FoodItem loadedItem = null;
 
     //ProfileObject variable that will hold any personal factors
-    ProfileObject person = null;
+    static ProfileObject person = null;
 
     //Function that will load the ProfileObject from the previous stage
     public void loadProfileObject(ProfileObject profile) {
@@ -173,17 +173,6 @@ public class IndexController {
                 alert.setContentText("Please ensure all inputs are numerical values");
                 alert.showAndWait();
             }
-            //Add intake to profile totals
-            System.out.println("After" + person.getTotalIntakeCal());
-            person.sumTotalIntakeCals(cals);
-            System.out.println("Before" + person.getTotalIntakeCal());
-//            person.setTotalIntakeFat(fat);
-//            person.setTotalIntakeSatFat(satFat);
-//            person.setTotalIntakeCarbs(carbs);
-//            person.setTotalIntakeSugars(sugar);
-//            person.setTotalIntakeFibre(fibre);
-//            person.setTotalIntakeProtein(protein);
-//            person.setTotalIntakeSalt(salt);
 
             //Creation of new food item
             newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
@@ -216,6 +205,7 @@ public class IndexController {
             alert.setContentText("All fields are required for input, please enter a numerical value in each input box");
             alert.showAndWait();
         }
+        //TODO remove this after finished
         doSomeStuff(breakdown);
     }
 
@@ -229,8 +219,6 @@ public class IndexController {
 
     public void sampleFoods(ActionEvent event) {
         try{
-//            Parent root = FXMLLoader.load(getClass().getResource("SampleFood.fxml")); //Get the Sample food root
-//            sampleFoodButton.getScene().setRoot(root);
             //New window code
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("SampleFood.fxml"));
@@ -258,7 +246,7 @@ public class IndexController {
             FileWriter filewr = new FileWriter("/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("IOException! Please report to appropriate team member");
+            System.out.println("IOException!");
         }
     }
 
@@ -304,6 +292,30 @@ public class IndexController {
             e.printStackTrace();
         }
         return storedFoodItems;
+    }
+
+    //Function that clears the current food intake of macros from the users profile.
+    public void clearCurrentDaysIntake(ActionEvent event) {
+
+        //Changes the labels to zero
+        calsLabel.setText("0.0");
+        fatLabel.setText("0.0");
+        satFatLabel.setText("0.0");
+        carbsLabel.setText("0.0");
+        sugarsLabel.setText("0.0");
+        fibreLabel.setText("0.0");
+        proteinLabel.setText("0.0");
+        saltLabel.setText("0.0");
+
+        //Sets the values in the Profile object back to 0
+        person.setTotalIntakeCal(0);
+        person.setTotalIntakeFat(0);
+        person.setTotalIntakeSatFat(0);
+        person.setTotalIntakeCarbs(0);
+        person.setTotalIntakeSugars(0);
+        person.setTotalIntakeFibre(0);
+        person.setTotalIntakeProtein(0);
+        person.setTotalIntakeSalt(0);
     }
 
 

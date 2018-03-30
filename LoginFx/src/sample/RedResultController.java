@@ -14,22 +14,36 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class RedResultController {
-    FoodItem outputFoodItem;
-    DecisionObject outputDecision;
+    static FoodItem outputFoodItem;
+    static DecisionObject outputDecision;
+    static ProfileObject outputProfile;
+
     @FXML
     BorderPane myPane;
 
-    @FXML
-    FoodItem inputtedFoodItem;
     @FXML
     Button continueButton;
 
     @FXML
     public void continueToResults(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("DetailedResults.fxml"));
-            continueButton.getScene().setRoot(root);
+            //New window code
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("DetailedResults.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            DetailedResultsController controller = loader.getController();
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Detailed Results");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
         } catch (IOException e) {
+            e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("IOException caught!");
             alert.setHeaderText("Input-Output Exception!");
@@ -39,8 +53,9 @@ public class RedResultController {
     }
 
     //TODO add person object
-    public void storeValues(DecisionObject decision, FoodItem food) {
+    public void storeValues(DecisionObject decision, FoodItem food, ProfileObject person) {
         outputFoodItem = food;
         outputDecision = decision;
+        outputProfile = person;
     }
 }

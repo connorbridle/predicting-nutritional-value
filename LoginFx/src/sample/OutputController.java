@@ -75,7 +75,7 @@ public class OutputController {
     //Output DecisionObject and foodItem
     private static FoodItem outputFoodItem;
     private static DecisionObject outputDecisionObject;
-    private ProfileObject outputPerson;
+    private static ProfileObject outputPerson;
 
     public static Date date = new Date();
     public static Calendar calendar = GregorianCalendar.getInstance();
@@ -123,6 +123,11 @@ public class OutputController {
     public void startPrediction(ActionEvent event) {
 //        outputFoodItem = inputtedFoodItem;
         overallScore = 0;
+
+        //Initialise the decision object with null values!
+        outputDecisionObject = new DecisionObject(null, outputFoodItem, null, 0, null,
+                null, null, null, null, null,
+                null, null, null);
         //Fills 2d array list with csv values
         //TODO if the person is male, parse male csv, if female parse female csv
         maleRDA = csvParser(maleRDAFilePath);
@@ -143,6 +148,7 @@ public class OutputController {
                 fibreScore + proteinScore + saltScore;
 
         //Assigning the RDA values from the current row of the csv file
+        //Could comment that it is more efficient to use a 2d array here
         RDA_CALS = Double.parseDouble(currentRow.get(1));
         RDA_FAT = Double.parseDouble(currentRow.get(2));
         RDA_SATFAT = Double.parseDouble(currentRow.get(3));
@@ -162,6 +168,30 @@ public class OutputController {
         totalIntakeFibre += outputFoodItem.getItemFibre();
         totalIntakeProtein += outputFoodItem.getItemProtein();
         totalIntakeSalt += outputFoodItem.getItemSodium();
+
+        //Increment that total variables on the profile object
+        outputPerson.setTotalIntakeCal(totalIntakeCal);
+        outputPerson.setTotalIntakeFat(totalIntakeFat);
+        outputPerson.setTotalIntakeSatFat(totalIntakeSatFat);
+        outputPerson.setTotalIntakeCarbs(totalIntakeCarbs);
+        outputPerson.setTotalIntakeSugars(totalIntakeSugars);
+        outputPerson.setTotalIntakeFibre(totalIntakeFibre);
+        outputPerson.setTotalIntakeProtein(totalIntakeProtein);
+        outputPerson.setTotalIntakeSalt(totalIntakeSalt);
+
+        //Add all the components to the null DecisionObject
+        outputDecisionObject.setCalsComments(calsComments);
+        outputDecisionObject.setFatComments(fatComments);
+        outputDecisionObject.setSatFatComments(satFatComments);
+        outputDecisionObject.setCarbsComments(carbsComments);
+        outputDecisionObject.setSugarsComments(sugarsComments);
+        outputDecisionObject.setFibreComments(fibreComments);
+        outputDecisionObject.setProteinComments(proteinComments);
+        outputDecisionObject.setSaltComments(saltComments);
+        outputDecisionObject.setGeneralCommentsComments(generalComments);
+        outputDecisionObject.setOverallScore(overallScore);
+        outputDecisionObject.setIndividualScore(new int[] {calsScore,fatScore,satFatScore,carbsScore,sugarsScore,fibreScore,proteinScore,saltScore});
+
 
         double[] measurementArray = {totalIntakeCal,totalIntakeFat,totalIntakeSatFat,totalIntakeCarbs,totalIntakeSugars,
                 totalIntakeFibre,totalIntakeProtein,totalIntakeSalt};
@@ -472,12 +502,14 @@ public class OutputController {
     //Function that outputs a no decision from the algorithm
     private void outputRedDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
+            //Sets the decision string to red
+            decisionMade.setDecisionString("red");
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("RedResultOuput.fxml"));
             Parent outputView = loader.load();
             //access the controller and call the method
             RedResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -493,12 +525,15 @@ public class OutputController {
     //Function that outputs a maybe decision from the algorithm
     private void outputAmberDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
+            //Sets the decision string to amber
+            decisionMade.setDecisionString("amber");
+
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("AmberResultOutput.fxml"));
             Parent outputView = loader.load();
             //access the controller and call the method
             AmberResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -514,12 +549,14 @@ public class OutputController {
     //Function that outputs a yes decision from the algorithm
     private void outputGreenDecision(DecisionObject decisionMade, ActionEvent event) {
         try {
+            //Sets the decision string to green
+            decisionMade.setDecisionString("green");
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("GreenResultOutput.fxml"));
             Parent outputView = loader.load();
             //access the controller and call the method
             GreenResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();

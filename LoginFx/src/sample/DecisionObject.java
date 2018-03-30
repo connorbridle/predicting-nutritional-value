@@ -100,5 +100,49 @@ public class DecisionObject {
     public void setDecisionString(String decisionString) {
         this.decisionString = decisionString;
     }
+
+    public void setIndividualScore(int[] individualScore) {
+        this.individualScore = individualScore;
+    }
+
+    public void setOverallScore(int overallScore) {
+        this.overallScore = overallScore;
+    }
+
+    public void setCalsComments(ArrayList<String> calsComments) {
+        this.calsComments = calsComments;
+    }
+
+    public void setFatComments(ArrayList<String> fatComments) {
+        this.fatComments = fatComments;
+    }
+
+    public void setSatFatComments(ArrayList<String> satFatComments) {
+        this.satFatComments = satFatComments;
+    }
+
+    public void setCarbsComments(ArrayList<String> carbsComments) {
+        this.carbsComments = carbsComments;
+    }
+
+    public void setSugarsComments(ArrayList<String> sugarsComments) {
+        this.sugarsComments = sugarsComments;
+    }
+
+    public void setFibreComments(ArrayList<String> fibreComments) {
+        this.fibreComments = fibreComments;
+    }
+
+    public void setProteinComments(ArrayList<String> proteinComments) {
+        this.proteinComments = proteinComments;
+    }
+
+    public void setSaltComments(ArrayList<String> saltComments) {
+        this.saltComments = saltComments;
+    }
+
+    public void setGeneralCommentsComments(ArrayList<String> generalCommentsComments) {
+        this.generalCommentsComments = generalCommentsComments;
+    }
 }
 

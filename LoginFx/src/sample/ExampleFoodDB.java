@@ -113,8 +113,8 @@ public class ExampleFoodDB implements Initializable{
 
             //access the controller and call the method
             IndexController controller = loader.getController();
-            controller.loadFoodItem(foodItemVariable);
             controller.loadProfileObject(person);
+            controller.loadFoodItem(foodItemVariable);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

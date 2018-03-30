@@ -170,6 +170,7 @@
                   <Font name="Arial" size="24.0" />
                </font>
             </Text>
+            <Button fx:id="clearDaysIntake" layoutY="247.0" mnemonicParsing="false" onAction="#clearCurrentDaysIntake" text="Clear days Intake" />
          </children>
       </AnchorPane>
    </left>
