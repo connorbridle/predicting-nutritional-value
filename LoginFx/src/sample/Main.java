@@ -14,12 +14,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("PersonalInput.fxml"));
+        loader.setLocation(getClass().getResource("Homepage.fxml"));
         Parent outputView = loader.load();
-
-        //access the controller and call the method
-        PersonalInputController controller = loader.getController();
-        controller.testingFunction();
 
         primaryStage.setTitle("Home");
         Scene newScene = new Scene(outputView);

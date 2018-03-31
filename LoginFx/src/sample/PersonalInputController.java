@@ -8,10 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,6 +37,8 @@ public class PersonalInputController implements Initializable {
     VBox mainInput;
     @FXML
     AnchorPane anchor;
+    @FXML
+    RadioButton disclaimer;
 
     //PersonalObject variable to pass to index method
     ProfileObject outputProfile;
@@ -47,26 +46,45 @@ public class PersonalInputController implements Initializable {
     @FXML
     public void continueToNext(ActionEvent event) {
         try {
-            //This section deals with calling the function of the other class and passing the relevant objects
-            //If no user profile being passed back
-            if (outputProfile == null) {
-                loadInputsToObject();
+            //Forces the user to read the disclaimer before using the program
+            if (disclaimer.isSelected()) {
+                //This section deals with calling the function of the other class and passing the relevant objects
+                if (Integer.parseInt(age.getText()) > 18) {
+                    //If no user profile being passed back
+                    if (outputProfile == null) {
+                        loadInputsToObject();
+                    }
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("index.fxml"));
+                    Parent outputView = loader.load();
+
+                    //access the controller and call the method
+                    IndexController controller = loader.getController();
+                    controller.loadProfileObject(outputProfile);
+
+                    Scene newScene = new Scene(outputView);
+                    Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                    primaryStage.setTitle("Home");
+                    primaryStage.setScene(newScene);
+                    primaryStage.show();
+                    //end new window code
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Age error!");
+                    alert.setHeaderText("Age too low to use this application!");
+                    alert.setContentText("You need to be at least 18 years old to use this application!");
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Disclaimer not read!");
+                alert.setHeaderText("Please read and check the disclaimer box!");
+                alert.setContentText("Before you continue using the program, you must read the disclaimer " +
+                        "and select the disclaimer read radio button!");
+                alert.showAndWait();
             }
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("index.fxml"));
-            Parent outputView = loader.load();
 
-
-            //access the controller and call the method
-            IndexController controller = loader.getController();
-            controller.loadProfileObject(outputProfile);
-
-            Scene newScene = new Scene(outputView);
-            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Home");
-            primaryStage.setScene(newScene);
-            primaryStage.show();
-            //end new window code
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("IOexception thrown and caught!");
@@ -132,6 +150,12 @@ public class PersonalInputController implements Initializable {
         catch (NumberFormatException e) {
             e.printStackTrace();
             System.out.println("Number format exception!");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Number format Exception caught!");
+            alert.setHeaderText("Number format Exception!");
+            alert.setContentText("Number format exception! Please enter an Integer value into the name input" +
+                    "box and resubmit the form!");
+            alert.showAndWait();
         }
 
     }

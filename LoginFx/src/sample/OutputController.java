@@ -52,7 +52,8 @@ public class OutputController {
 
     //Variable that holds the row index for the persons age when the person inputs their age and submits
     private static int rowIndex = 0;
-    private static int inputtedAge = 25; //TODO Testing variable, delete when done
+    private static int inputtedAge = 0;
+    private static Gender inputtedGender= null;
 
     //Score array to hold all the scores for the individual macros
     private static int overallScore = 0;
@@ -104,6 +105,9 @@ public class OutputController {
         outputFoodItem = inputtedFoodItem;
         loadFoodItem(outputFoodItem);
         outputPerson = person;
+        inputtedAge = outputPerson.getAge(); //Sets the age
+        inputtedGender = outputPerson.getGender(); //Sets the gender
+
     }
 
     public void loadFoodItem(FoodItem input) {
@@ -124,6 +128,17 @@ public class OutputController {
 //        outputFoodItem = inputtedFoodItem;
         overallScore = 0;
 
+        //Clear the arraylists
+        calsComments = new ArrayList<>();
+        fatComments = new ArrayList<>();
+        satFatComments = new ArrayList<>();
+        carbsComments = new ArrayList<>();
+        sugarsComments = new ArrayList<>();
+        fibreComments = new ArrayList<>();
+        proteinComments = new ArrayList<>();
+        saltComments = new ArrayList<>();
+        generalComments = new ArrayList<>();
+
         //Initialise the decision object with null values!
         outputDecisionObject = new DecisionObject(null, outputFoodItem, null, 0, null,
                 null, null, null, null, null,
@@ -133,17 +148,25 @@ public class OutputController {
         maleRDA = csvParser(maleRDAFilePath);
         femaleRDA = csvParser(femaleRDAFilePath);
         rowIndex = returnRowIndex(inputtedAge); //TODO age input
-        currentRow = maleRDA.get(rowIndex);
+        //
+        if (inputtedGender == Gender.MALE) {
+            currentRow = maleRDA.get(rowIndex);
+        } else if (inputtedGender == Gender.FEMALE) {
+            currentRow = femaleRDA.get(rowIndex);
+        } else {
+            currentRow = maleRDA.get(rowIndex);
+        }
 
         //Pass the values contained to the various score methods
-        int calsScore = calculateCaloriesScore(outputFoodItem.getItemCals(), currentRow);
-        int fatScore = calculateFatScore(outputFoodItem.getItemFat(), currentRow);
-        int satFatScore = calculateSatFatScore(outputFoodItem.getItemSatFat(), currentRow);
-        int carbsScore = calculateCarbsScore(outputFoodItem.getItemCarbs(), currentRow);
-        int sugarsScore = calculateSugarsScore(outputFoodItem.getItemSugar(), currentRow);
-        int fibreScore = calculateFibreScore(outputFoodItem.getItemFibre(), currentRow);
-        int proteinScore = calculateProteinScore(outputFoodItem.getItemProtein(), currentRow);
-        int saltScore = calculateSaltScore(outputFoodItem.getItemSodium(), currentRow);
+        //Each method takes the the macro, the current row of the csv file rdas, and the profile object
+        int calsScore = calculateCaloriesScore(outputFoodItem.getItemCals(), currentRow, outputPerson);
+        int fatScore = calculateFatScore(outputFoodItem.getItemFat(), currentRow, outputPerson);
+        int satFatScore = calculateSatFatScore(outputFoodItem.getItemSatFat(), currentRow, outputPerson);
+        int carbsScore = calculateCarbsScore(outputFoodItem.getItemCarbs(), currentRow, outputPerson);
+        int sugarsScore = calculateSugarsScore(outputFoodItem.getItemSugar(), currentRow, outputPerson);
+        int fibreScore = calculateFibreScore(outputFoodItem.getItemFibre(), currentRow, outputPerson);
+        int proteinScore = calculateProteinScore(outputFoodItem.getItemProtein(), currentRow, outputPerson);
+        int saltScore = calculateSaltScore(outputFoodItem.getItemSodium(), currentRow, outputPerson);
         overallScore = calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
                 fibreScore + proteinScore + saltScore;
 
@@ -350,7 +373,7 @@ public class OutputController {
     //TODO might be better to have all these functions as a single one, and pass in the food item value and rda for each
     //Calculates a score for the calories contained in the food item
 
-    private static int calculateCaloriesScore(double cals, List<String> currentRow) {
+    private static int calculateCaloriesScore(double cals, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
         int returnScore = (int)percentage;
@@ -366,7 +389,7 @@ public class OutputController {
     }
 
     //Calculates a score for the fat contained in the food item
-    private static int calculateFatScore(double fat, List<String> currentRow) {
+    private static int calculateFatScore(double fat, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = (fat / (Double.parseDouble(currentRow.get(2))) ) * 100;
         int returnScore = (int)percentage;
@@ -389,7 +412,7 @@ public class OutputController {
     }
 
     //Calculates a score for the satfat contained in the food item
-    private static int calculateSatFatScore(double satFat, List<String> currentRow) {
+    private static int calculateSatFatScore(double satFat, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
         int score = (int)percentage;
@@ -412,7 +435,7 @@ public class OutputController {
     }
 
     //Calculates a score for the carbs contained in the food item
-    private static int calculateCarbsScore(double carbs, List<String> currentRow) {
+    private static int calculateCarbsScore(double carbs, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (carbs / (Double.parseDouble(currentRow.get(4))) ) * 100;
         int returnScore = (int)percentage;
@@ -421,7 +444,7 @@ public class OutputController {
 
     //Calculates a score for the sugars contained in the food item
     //MAX SCORE = 100% +10
-    private static int calculateSugarsScore(double sugars, List<String> currentRow) {
+    private static int calculateSugarsScore(double sugars, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (sugars / (Double.parseDouble(currentRow.get(5))) ) * 100;
         int returnScore = (int)percentage;
@@ -452,7 +475,7 @@ public class OutputController {
     }
 
     //Calculates a score for the fibre contained in the food item
-    private static int calculateFibreScore(double fibre, List<String> currentRow) {
+    private static int calculateFibreScore(double fibre, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (fibre / (Double.parseDouble(currentRow.get(6))) ) * 100;
         int returnScore = (int)percentage;
@@ -460,7 +483,7 @@ public class OutputController {
     }
 
     //Calculates a score for the protein contained in the food item
-    private static int calculateProteinScore(double protein, List<String> currentRow) {
+    private static int calculateProteinScore(double protein, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (protein / (Double.parseDouble(currentRow.get(7))) ) * 100;
 
@@ -469,12 +492,32 @@ public class OutputController {
             proteinComments.add("Consuming more than 30g of protein in one sitting has been proven to be " +
                     "pointless as the excess is excreted as waste product");
         }
+
+        //According to EU, food that has protein content of over 20% of total energy value is considered high protein
+        if(outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30 && outputPerson.getGoal() ==
+                Goal.GAIN) {
+            proteinComments.add("This food item is high in protein according to the European Commission!");
+            proteinComments.add("Consuming protein during, before or after high levels of exercise is said to " +
+                    "be a good way to increase muscle mass!");
+            //Score decrease
+        } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30
+                && outputPerson.getGoal() == Goal.LOSE) {
+            proteinComments.add("High protein whilst trying to loose weight is said to be fine as long as the protein " +
+                    "is not contributing to excess calories");
+        } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein < 5) {
+            proteinComments.add("It may be beneficial to consume a food item higher in protein after or before " +
+                    "exercise to maximise the benefit.");
+            //score increase
+        } else if (protein > 20 && protein < 30) {
+            proteinComments.add("This food item is high in protein according to the European Commission!");
+            //score increase
+        }
         return 5;
     }
 
     //Calculates a score for the fibre contained in the food item
     //MAX SCORE = 100% + 10
-    private static int calculateSaltScore(double salt, List<String> currentRow) {
+    private static int calculateSaltScore(double salt, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
         int score = (int)percentage;
