@@ -52,10 +52,10 @@ public class IndexController {
 
 
     //FoodItem variable that will hold the loaded food item
-    static FoodItem loadedItem = null;
+    private static FoodItem loadedItem = null;
 
     //ProfileObject variable that will hold any personal factors
-    static ProfileObject person = null;
+    private static ProfileObject person = null;
 
     //Function that will load the ProfileObject from the previous stage
     public void loadProfileObject(ProfileObject profile) {
@@ -317,6 +317,7 @@ public class IndexController {
         person.setTotalIntakeProtein(0);
         person.setTotalIntakeSalt(0);
     }
+
 
 
 }

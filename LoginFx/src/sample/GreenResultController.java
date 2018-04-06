@@ -11,15 +11,17 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class GreenResultController {
 
     @FXML
     Button continueButton;
 
-    FoodItem outputFoodItem;
-    DecisionObject outputDecision;
-    ProfileObject outputProfile;
+    private static FoodItem outputFoodItem;
+    private static DecisionObject outputDecision;
+    private static ProfileObject outputProfile;
+    private static List<String> outputRDA;
 
     public void continueToResults(ActionEvent event) {
         try {
@@ -30,7 +32,7 @@ public class GreenResultController {
 
             //access the controller and call the method
             DetailedResultsController controller = loader.getController();
-            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile, outputRDA);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -48,9 +50,33 @@ public class GreenResultController {
     }
 
     //TODO add person object
-    public void storeValues(DecisionObject decision, FoodItem food, ProfileObject person) {
+    public void storeValues(DecisionObject decision, FoodItem food, ProfileObject person, List<String> curentRow) {
         outputFoodItem = food;
         outputDecision = decision;
         outputProfile = person;
+        outputRDA = curentRow;
+    }
+
+    //Function that takes you back to the starting point
+    public void returnToStart(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("index.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            IndexController controller = loader.getController();
+            controller.loadProfileObject(outputProfile);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Food item advice");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+        } catch (IOException ex) {
+            System.out.println("Input output exception caught!");
+            System.out.println(ex.getStackTrace());
+        }
     }
 }

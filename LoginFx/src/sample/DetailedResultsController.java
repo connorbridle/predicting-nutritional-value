@@ -7,13 +7,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DetailedResultsController {
@@ -21,7 +24,10 @@ public class DetailedResultsController {
     private static FoodItem outputFoodItem;
     private static DecisionObject outputDecision;
     private static ProfileObject outputProfile;
+    private static List<String> outputRDA;
 
+    @FXML
+    Button calsButton, fatButton, satFatButton, carbsButton, sugarsButton, fibreButton, proteinButton, saltButton;
     @FXML
     Label calsLabel, fatLabel, satFatLabel, carbsLabel, sugarsLabel, fibreLabel, proteinLabel, saltLabel;
     @FXML
@@ -49,10 +55,11 @@ public class DetailedResultsController {
         }
     }
     //TODO add person object
-    public void storeValues(DecisionObject decision, FoodItem food, ProfileObject person) {
+    public void storeValues(DecisionObject decision, FoodItem food, ProfileObject person, List<String> currentRow) {
         outputFoodItem = food;
         outputDecision = decision;
         outputProfile = person;
+        outputRDA = currentRow;
         //Populate table with comments
         populateTableWithValues();
     }
@@ -182,7 +189,7 @@ public class DetailedResultsController {
 
             //access the controller and call the method
             RedResultController controller = loader.getController();
-            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile, outputRDA);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -204,7 +211,7 @@ public class DetailedResultsController {
 
             //access the controller and call the method
             AmberResultController controller = loader.getController();
-            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile, outputRDA);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -227,7 +234,7 @@ public class DetailedResultsController {
 
             //access the controller and call the method
             GreenResultController controller = loader.getController();
-            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile, outputRDA);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -239,5 +246,82 @@ public class DetailedResultsController {
             System.out.println("Input output exception caught!");
             System.out.println(ex.getStackTrace());
         }
+    }
+
+    //Function that opens up the graph view
+    public void openGraphView(ActionEvent event, int index) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("BarChart.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            BarChartController controller = loader.getController();
+            controller.takeData(outputRDA,outputFoodItem, outputProfile, outputDecision, index);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Output Page");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void openFullGraphView(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("FullBarChart.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            FullBarChartController controller = loader.getController();
+            controller.takeData(outputRDA,outputFoodItem, outputProfile, outputDecision);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Full Input Comparison");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Functions that deal with each of the buttons in the graph, pass the relevant index that will be used in the rda list
+    public void calsButton(ActionEvent event) {
+        int index = 1;
+        openGraphView(event,index);
+    }
+    public void fatButton(ActionEvent event) {
+        int index = 2;
+        openGraphView(event,index);
+    }
+    public void satFatButton(ActionEvent event) {
+        int index = 3;
+        openGraphView(event,index);
+    }
+    public void carbsButton(ActionEvent event) {
+        int index = 4;
+        openGraphView(event,index);
+    }
+    public void sugarsButton(ActionEvent event) {
+        int index = 5;
+        openGraphView(event,index);
+    }
+    public void fibreButton(ActionEvent event) {
+        int index = 6;
+        openGraphView(event,index);
+    }
+    public void proteinButton(ActionEvent event) {
+        int index = 7;
+        openGraphView(event,index);
+    }
+    public void saltButton(ActionEvent event) {
+        int index = 8;
+        openGraphView(event,index);
     }
 }

@@ -12,12 +12,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class DetailedResultsController2 {
 
-    static ProfileObject outputProfile; //Profile to be passed back to index
-    static FoodItem outputFoodItem; //For use on this stage only, when the restart button is passed
-    static DecisionObject outputDecision; //For use on this stage only,
+    private static ProfileObject outputProfile; //Profile to be passed back to index
+    private static FoodItem outputFoodItem; //For use on this stage only, when the restart button is passed
+    private static DecisionObject outputDecision; //For use on this stage only,
+    private static List<String> outputRDA;
 
     @FXML
     VBox generalCom;
@@ -78,7 +80,7 @@ public class DetailedResultsController2 {
 
             //access the controller and call the method
             DetailedResultsController controller = loader.getController();
-            controller.storeValues(outputDecision, outputFoodItem, outputProfile);
+            controller.storeValues(outputDecision, outputFoodItem, outputProfile, outputRDA);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

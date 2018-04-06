@@ -188,4 +188,12 @@ public class PersonalInputController implements Initializable {
         System.out.println("TESTING SAT" + outputProfile.getTotalIntakeSatFat());
     }
 
+    public void showDisclaimer(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Disclaimer dialog");
+        alert.setHeaderText("Software application disclaimer");
+        alert.setContentText("Here holds the disclaimer information for the application.");
+        alert.showAndWait();
+    }
+
 }

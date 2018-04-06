@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.HomepageController">
    <center>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+         <children>
+            <Label layoutX="317.0" layoutY="78.0" text="Third Year Project Application">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="299.0" layoutY="30.0" text="Should I Eat This?" textFill="#b22626">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Text fill="#282828" layoutX="246.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Many software tools and applications exist for monitoring dietary intake and other information relating to nutrition. However, a piece of software that tells you quickly whether a certain food is good to eat depending on the macro-nutrient breakdown, the time of the day, and any other personal factors that may influence that decision does not exist.  This application will attempt to solve this problem by providing users the necessary inputs, performing operations on the inputted data, and then determining whether it will be suitable to eat a certain food item and notifying the user using a three-flag system: Red for do not eat, Amber for consider before eating, and green for good to eat." textAlignment="CENTER" wrappingWidth="400.0">
+               <font>
+                  <Font name="System Font" size="13.0" />
+               </font>
+            </Text>
+            <HBox alignment="CENTER" layoutX="356.0" layoutY="290.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="61.0" prefWidth="104.0" text="Reading the disclaimer is required!" textAlignment="CENTER" textFill="#b22626" wrapText="true">
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#disclaimerDialog" prefHeight="29.0" prefWidth="85.0" text="Disclaimer">
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </Button>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+         </children></AnchorPane>
    </center>
    <top>
       <HBox prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER" />
@@ -18,7 +53,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="50.0" prefWidth="900.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="start" mnemonicParsing="false" onAction="#startProgram" text="Submit" />
+            <Button fx:id="start" mnemonicParsing="false" onAction="#startProgram" text="Start Application" />
          </children>
       </HBox>
    </bottom>

@@ -552,7 +552,7 @@ public class OutputController {
             Parent outputView = loader.load();
             //access the controller and call the method
             RedResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson, currentRow);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -576,7 +576,7 @@ public class OutputController {
             Parent outputView = loader.load();
             //access the controller and call the method
             AmberResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson, currentRow);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -599,7 +599,7 @@ public class OutputController {
             Parent outputView = loader.load();
             //access the controller and call the method
             GreenResultController controller = loader.getController();
-            controller.storeValues(decisionMade, outputFoodItem, outputPerson);
+            controller.storeValues(decisionMade, outputFoodItem, outputPerson, currentRow);
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -638,5 +638,8 @@ public class OutputController {
 
         return lines;
     }
+    
+
+    //Function that takes back the object inputs from the graph
 
 }

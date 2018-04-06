@@ -3,20 +3,32 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.PersonalInputController">
    <center>
       <AnchorPane fx:id="anchor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox fx:id="mainInput" alignment="TOP_CENTER" layoutX="350.0" layoutY="75.0" spacing="5.0">
+            <Label layoutX="299.0" layoutY="14.0" text="Should I Eat This?" textFill="#b22626">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <VBox fx:id="mainInput" alignment="TOP_CENTER" layoutX="317.0" layoutY="77.0" spacing="5.0">
                <children>
+                  <Label text="Enter Personal Information">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                   <TextField fx:id="name" promptText="Name" />
                   <TextField fx:id="age" promptText="Age" />
                   <HBox alignment="CENTER">
@@ -59,12 +71,13 @@
                      </padding>
                   </HBox>
                   <RadioButton fx:id="disclaimer" mnemonicParsing="false" text="I have read the disclamer" />
+                  <Button mnemonicParsing="false" onAction="#showDisclaimer" text="Disclaimer" />
                </children>
             </VBox>
          </children></AnchorPane>
    </center>
    <top>
-      <HBox prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER" />
+      <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER" />
    </top>
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
