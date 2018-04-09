@@ -135,68 +135,82 @@ public class IndexController {
                         || sugarText.getText().equals("")|| fibreText.getText().equals("")|| proteinText.getText().equals("")
                         || saltText.getText().equals("")))
                 {
-                    try {
-                        //varibles for easy access
-                        name = foodNameText.getText();
-                        cals = Double.parseDouble(caloriesText.getText());
-                        fat = Double.parseDouble(fatText.getText());
-                        satFat = Double.parseDouble(satFatText.getText());
-                        carbs = Double.parseDouble(carbsText.getText());
-                        sugar = Double.parseDouble(sugarText.getText());
-                        fibre = Double.parseDouble(fibreText.getText());
-                        protein = Double.parseDouble(proteinText.getText());
-                        salt = Double.parseDouble(saltText.getText());
-                        //TODO figure out a way to also pass the name text as well as the doubles list (maybe in a map)
-                        //TODO maybe instead of using these array lists i could just store it in a FoodItem Object
-                        breakdown.add(cals);
-                        breakdown.add(fat);
-                        breakdown.add(satFat);
-                        breakdown.add(carbs);
-                        breakdown.add(sugar);
-                        breakdown.add(fibre);
-                        breakdown.add(protein);
-                        breakdown.add(salt);
+                    //If all values are below 100g
+                    if (Double.parseDouble(caloriesText.getText()) < 100 && Double.parseDouble(fatText.getText()) < 100 &&
+                            Double.parseDouble(satFatText.getText()) < 100 && Double.parseDouble(carbsText.getText()) < 100 &&
+                            Double.parseDouble(sugarText.getText()) < 100 && Double.parseDouble(fibreText.getText()) < 100 &&
+                            Double.parseDouble(proteinText.getText()) < 100 && Double.parseDouble(saltText.getText()) < 100) {
+                        try {
+                            //varibles for easy access
+                            name = foodNameText.getText();
+                            cals = Double.parseDouble(caloriesText.getText());
+                            fat = Double.parseDouble(fatText.getText());
+                            satFat = Double.parseDouble(satFatText.getText());
+                            carbs = Double.parseDouble(carbsText.getText());
+                            sugar = Double.parseDouble(sugarText.getText());
+                            fibre = Double.parseDouble(fibreText.getText());
+                            protein = Double.parseDouble(proteinText.getText());
+                            salt = Double.parseDouble(saltText.getText());
+                            //TODO figure out a way to also pass the name text as well as the doubles list (maybe in a map)
+                            //TODO maybe instead of using these array lists i could just store it in a FoodItem Object
+                            breakdown.add(cals);
+                            breakdown.add(fat);
+                            breakdown.add(satFat);
+                            breakdown.add(carbs);
+                            breakdown.add(sugar);
+                            breakdown.add(fibre);
+                            breakdown.add(protein);
+                            breakdown.add(salt);
 
 
-            } catch (InputMismatchException e) {
-                System.out.println("Error: Input mismatch!");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Input mismatch error!");
-                alert.setHeaderText("Input mismatch error");
-                alert.setContentText("Please ensure correct input on all boxes");
-                alert.showAndWait();
-            } catch (NumberFormatException g) {
-                System.out.println("Error: Number format expection!");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Number format error!");
-                alert.setHeaderText("Number input error");
-                alert.setContentText("Please ensure all inputs are numerical values");
-                alert.showAndWait();
-            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("Error: Input mismatch!");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Input mismatch error!");
+                            alert.setHeaderText("Input mismatch error");
+                            alert.setContentText("Please ensure correct input on all boxes");
+                            alert.showAndWait();
+                        } catch (NumberFormatException g) {
+                            System.out.println("Error: Number format expection!");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Number format error!");
+                            alert.setHeaderText("Number input error");
+                            alert.setContentText("Please ensure all inputs are numerical values");
+                            alert.showAndWait();
+                        }
 
-            //Creation of new food item
-            newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
+                        //Creation of new food item
+                        newFoodItem = new FoodItem(name, cals, fat, satFat, carbs, sugar, fibre, protein, salt);
 
-            //This section deals with calling the function of the other class and passing the relevant objects to said
-            //function
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("OutputPage.fxml"));
-            Parent outputView = loader.load();
+                        //This section deals with calling the function of the other class and passing the relevant objects to said
+                        //function
+                        FXMLLoader loader = new FXMLLoader();
+                        loader.setLocation(getClass().getResource("OutputPage.fxml"));
+                        Parent outputView = loader.load();
 
-            //Parse and store the food item into the csv file of stored food items
-            parseFoodItem(name, breakdown, "/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
+                        //Parse and store the food item into the csv file of stored food items
+                        parseFoodItem(name, breakdown, "/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
 
-            //access the controller and call the method
-            OutputController controller = loader.getController();
-            controller.storeObjectInputs(newFoodItem,person);
+                        //access the controller and call the method
+                        OutputController controller = loader.getController();
+                        controller.storeObjectInputs(newFoodItem,person);
 
-            Scene newScene = new Scene(outputView);
-            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            primaryStage.setTitle("Food item advice");
-            primaryStage.setScene(newScene);
-            primaryStage.show();
-            //end new window code
-
+                        Scene newScene = new Scene(outputView);
+                        Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                        primaryStage.setTitle("Food item advice");
+                        primaryStage.setScene(newScene);
+                        primaryStage.show();
+                        //end new window code
+                    } else {
+                        //Else show error message and wait
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Input error!");
+                        alert.setHeaderText("Value over 100g!");
+                        alert.setContentText("All values entered into the system must be between " +
+                                "1-100. The program is designed to use macronutrient per 100g, " +
+                                "therefore it is essential the correct input format is followed.");
+                        alert.showAndWait();
+                    }
         } else {
             //Else show error message and wait
             Alert alert = new Alert(Alert.AlertType.ERROR);

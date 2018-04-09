@@ -47,8 +47,6 @@ public class OutputController {
     private static double RDA_SALT = 0;
     private static double currentIntake = 0;
 
-    //Variable that holds the value of a decision (1=Red, 2=Amber, 3=Green)
-    private int foodItemDecision = 0;
 
     //Variable that holds the row index for the persons age when the person inputs their age and submits
     private static int rowIndex = 0;
@@ -167,6 +165,36 @@ public class OutputController {
         int fibreScore = calculateFibreScore(outputFoodItem.getItemFibre(), currentRow, outputPerson);
         int proteinScore = calculateProteinScore(outputFoodItem.getItemProtein(), currentRow, outputPerson);
         int saltScore = calculateSaltScore(outputFoodItem.getItemSodium(), currentRow, outputPerson);
+        int[] arrayOfScores = new int[]{calsScore,fatScore,satFatScore,carbsScore,sugarsScore,fibreScore,proteinScore,saltScore};
+//        int[] normalisedScores = new int[8];
+//
+//        //Scaling down between 1 and 10
+//        int maxRange = Arrays.stream(arrayOfScores).max().getAsInt();
+//        int minRange = Arrays.stream(arrayOfScores).min().getAsInt();
+//        System.out.println("TESTING!@@£@£@£@£: " + maxRange + minRange);
+//        for (int i = 0; i < arrayOfScores.length; i++) {
+//            int beforeScale = arrayOfScores[i];
+//            System.out.println("before scale: " + beforeScale);
+//            int afterScale = scaleNumbersBetween(beforeScale, 0,100,minRange,maxRange);
+//            System.out.println("after scale: " + afterScale);
+//            normalisedScores[i] = afterScale;
+//        }
+//
+//        System.out.println("DSFFDFSDFSF" + arrayOfScores[0]);
+//        System.out.println("DSFFDFSDFSF" + normalisedScores[0]);
+
+
+        //Map to hold the scores calculated by the functions below
+        HashMap<String, Integer> mapOfScores = new HashMap<>();
+        mapOfScores.put("cals", calsScore);
+        mapOfScores.put("fat", fatScore);
+        mapOfScores.put("satFat", satFatScore);
+        mapOfScores.put("carbs", carbsScore);
+        mapOfScores.put("sugars", sugarsScore);
+        mapOfScores.put("fibre", fibreScore);
+        mapOfScores.put("protein", proteinScore);
+        mapOfScores.put("salt", saltScore);
+
         overallScore = calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
                 fibreScore + proteinScore + saltScore;
 
@@ -226,7 +254,6 @@ public class OutputController {
         //If overRDA in any of the macros, no need to do any further calculations
         if (overRDA(output)) {
             populateComments(macroFailIndex); //Populates the relevant comments array with suitable notification to user
-            foodItemDecision = 1; //Equivalent to saying that the decision is red/no
             outputRedDecision(testingDecision, event); //TODO change this to output the proper decision object
             System.out.println("RED -> Not advisable to eat!");
         } else {
@@ -266,6 +293,10 @@ public class OutputController {
         outputDecisionObject = new DecisionObject("amber", outputFoodItem, score, overallScore, calsComments, fatComments,
                 satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
     }
+    //Scales the number between the range provided
+//    private static int scaleNumbersBetween(int numberInput, int minRange, int maxRange, int min, int max) {
+//        return ((maxRange - minRange)*(numberInput-min)) / ((max-min) + minRange);
+//    }
 
 
     //Function that makes the final decision based on an inputted score variable
@@ -378,12 +409,33 @@ public class OutputController {
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
         int returnScore = (int)percentage;
 
+        //Calories and weight loss goal
+        if (cals > 250 && outputPerson.getGoal() == Goal.LOSE && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+            calsComments.add("Consuming a large serving of calories whilst trying to lose weight and whilst at " +
+                    "a low level of activity can be unproductive to reach your aims.");
+            returnScore += 25;
+        } else if (cals > 250 && outputPerson.getGoal() == Goal.MAINTAIN && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+            returnScore += 10;
+        } else if (cals > 250 && outputPerson.getGoal() == Goal.LOSE) {
+            calsComments.add("Consuming large amounts of calories in one serving when attempting to lose " +
+                    "weight is unproductive.");
+            returnScore += 25;
+        } else if (cals > 250 && outputPerson.getGoal() == Goal.MAINTAIN) {
+            calsComments.add("Consuming large amounts of calories in one serving can cause an increase in body " +
+                    "weight.");
+            returnScore += 10;
+        }
+
         //Large food intake before bed could lead to obesity
         calendar.setTime(date);
         int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
         if (currentTime > 21 && cals < 250) {
             calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
                     "risk of obesity");
+        }
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
         }
         return returnScore;
     }
@@ -399,14 +451,37 @@ public class OutputController {
             //Classed as high fat content by the eat-well guide
             fatComments.add("Eatwell guide suggests fat content of 21g or higher per 100g of food is " +
                     "considered high intake.");
+            returnScore += 25;
         } else if (fat >= 4 && fat <= 20) {
             //Classed as medium fat content per 100g by the eat-well guide
             fatComments.add("Eatwell guide suggests fat content more than 4g and less than 20g per 100g of food" +
                     "is a medium fat content.");
+            returnScore += 10;
         } else if (fat <= 3) {
             //Classed as a low fat content item per 100g by the eat-well guide
             fatComments.add("Eatwell guide suggests fat content less than or equal to 3g per 100g of food is" +
                     "considered low intake.");
+        }
+
+        //Goal and activity level measures
+        if (fat >= 21 && outputPerson.getGoal() == Goal.LOSE && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+            fatComments.add("Consuming large amounts of fat whilst trying to lose weight and with a current low activity " +
+                    "level is unproductive.");
+            returnScore += 25;
+        } else if(fat >= 21 && outputPerson.getGoal() == Goal.MAINTAIN && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+            fatComments.add("Consuming large amounts of fat with a low exercise rate can lead to weight increase.");
+            returnScore += 10;
+        } else if(fat >= 21 && outputPerson.getGoal() == Goal.LOSE) {
+            fatComments.add("Consuming large amounts of protein when trying to lose weight is unproductive");
+            returnScore += 25;
+        } else if (fat >= 21 && outputPerson.getGoal() == Goal.MAINTAIN) {
+            fatComments.add("Consuming large amounts of calories in one serving can cause a weight increase.");
+            returnScore += 10;
+        }
+
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
         }
         return returnScore;
     }
@@ -415,22 +490,38 @@ public class OutputController {
     private static int calculateSatFatScore(double satFat, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
-        int score = (int)percentage;
+        int returnScore = (int)percentage;
         //Eat-well guide measures
         if (satFat >= 5) {
             //Classed as high satfat content per 100g by the eat-well guide
             satFatComments.add("Eatwell guide suggests saturated-fat content more than 5g per 100g of food" +
                     "is considered high intake.");
+            returnScore += 25;
         } else if (satFat > 1.5 && satFat < 5) {
             //Classed as medium fat content per 100g by the eat-well guide
             satFatComments.add("Eatwell guide suggests saturated-fat content between 1.5g and 5g per 100g of" +
                     "food is considered medium content");
+            returnScore += 10;
         } else if (satFat <= 1.5) {
             //Classed as low fat content per 100g by the eat-well guide
             satFatComments.add("Eatwell guide suggests saturated-fat content less than or equal to 1.5g per " +
                     "100g of food is considered low intake.");
         }
-        int returnScore = (int)percentage;
+
+        //sat fat and activity level
+        if (satFat >= 5 && outputPerson.getGoal() == Goal.LOSE) {
+            satFatComments.add("Eating high levels of Saturated fat when you are trying to lose weight " +
+                    "is not productive.");
+            returnScore += 25;
+        } else if (satFat >= 5 && outputPerson.getGoal() == Goal.MAINTAIN) {
+            satFatComments.add("Eating high levels of Saturated fat could lead to an increase in weight, " +
+                    "therefore it is advisable to avoid");
+        }
+
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
+        }
         return returnScore;
     }
 
@@ -439,6 +530,14 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (carbs / (Double.parseDouble(currentRow.get(4))) ) * 100;
         int returnScore = (int)percentage;
+
+        //Consuming dietary carbs after exhausted exercise has been clearly demonstrated
+        if (carbs > 50 && outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+            carbsComments.add("Consuming carbohydrates just before or after exhaustive exercise can result in " +
+                    "hypoglycemia and early onset exhaustion.");
+            returnScore += 10;
+        }
+
         return returnScore;
     }
 
@@ -454,14 +553,38 @@ public class OutputController {
             //Classed as a high sugar content item per 100g by the eat-well guide
             sugarsComments.add("Eatwell guide suggests sugar content higher than 15g per 100g of food item is " +
                     "considered high intake.");
+            returnScore += 25;
         } else if (sugars <=15 && sugars >=6) {
             //Classed as a medium sugar content item per 100g by the eat-well guide
             sugarsComments.add("Eatwell guide suggests sugar content between 6g and 15g per 100g of food item " +
                     "is considered medium intake.");
+            returnScore += 10;
         } else if (sugars < 6) {
             //Classed as a low sugar content item per 100g by the eat-well guide
             sugarsComments.add("Eatwell guide suggests sugar content less than 6g per 100g of food item " +
                     "is considered low intake.");
+        }
+
+        //Sugars and weight goals
+        if (sugars > 15 && outputPerson.getGoal() == Goal.LOSE) {
+            sugarsComments.add("Consuming large portions of sugar is detrimental to your weight loss goal.");
+            returnScore += 25;
+        } else if (sugars > 15 && outputPerson.getGoal() == Goal.MAINTAIN) {
+            sugarsComments.add("Consuming large portions of sugar and sugary snacks can lead to weight " +
+                    "gain.");
+        }
+
+        //Sugars and exercise
+        if (sugars <=15 && sugars >=6 && outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+            sugarsComments.add("Consuming a moderate amount of sugar during exercise can increase " +
+                    "energy stores.");
+        } else if (sugars <=15 && sugars >=6 && outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
+            sugarsComments.add("Consuming a moderate amount of sugar during mild exercise may be detrimental " +
+                    "to your efforts.");
+            returnScore += 10;
+        } else if (sugars > 15 && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+            sugarsComments.add("Consuming a moderate amount of sugar in low periods of exercise is not advisable.");
+            returnScore += 25;
         }
 
         //Eating sugar at night may prevent you from sleeping
@@ -469,8 +592,13 @@ public class OutputController {
         int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
         if (currentTime > 21) {
             sugarsComments.add("Eating sugar close to when you sleep is shown to keep you awake.");
+            returnScore += 25;
         }
 
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
+        }
         return returnScore;
     }
 
@@ -479,6 +607,24 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (fibre / (Double.parseDouble(currentRow.get(6))) ) * 100;
         int returnScore = (int)percentage;
+
+        //High fibre diet in woman cuts breast cancer risk (NHS)
+        if (fibre > 10 && outputPerson.getGender() == Gender.FEMALE) {
+            fibreComments.add("The NHS posted an article suggested that young women with a high fibre diet " +
+                    "may have a lower breast cancer risk.");
+        } else if (fibre < 10 && outputPerson.getGender() == Gender.FEMALE) {
+            fibreComments.add("The NHS posted an article suggesting high fibre intake for young women could reduce " +
+                    "breast cancer risk.");
+        } else if (fibre > 10 && (outputPerson.getGender() == Gender.MALE || outputPerson.getGender() == Gender.FEMALE)) {
+            System.out.println("THIS SHIT IS LIT FAM");
+            fibreComments.add("The NHS posted an article conducted by British and Dutch researchers that suggested " +
+                    "high fibre intake could could reduce the risk of colorectal cancer.");
+        }
+
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
+        }
         return returnScore;
     }
 
@@ -486,11 +632,13 @@ public class OutputController {
     private static int calculateProteinScore(double protein, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (protein / (Double.parseDouble(currentRow.get(7))) ) * 100;
+        int returnScore = (int)percentage;
 
         //If the protein is above 30g in a single meal, body might not be able to absorb it all
         if (protein > 30) {
             proteinComments.add("Consuming more than 30g of protein in one sitting has been proven to be " +
                     "pointless as the excess is excreted as waste product");
+            returnScore += 25;
         }
 
         //According to EU, food that has protein content of over 20% of total energy value is considered high protein
@@ -507,10 +655,15 @@ public class OutputController {
         } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein < 5) {
             proteinComments.add("It may be beneficial to consume a food item higher in protein after or before " +
                     "exercise to maximise the benefit.");
+            returnScore += 10;
             //score increase
         } else if (protein > 20 && protein < 30) {
             proteinComments.add("This food item is high in protein according to the European Commission!");
             //score increase
+        }
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
         }
         return 5;
     }
@@ -520,26 +673,30 @@ public class OutputController {
     private static int calculateSaltScore(double salt, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
-        int score = (int)percentage;
+        int returnScore = (int)percentage;
 
         //Eat-well guide measures
         if (salt > 1.5) {
             //Classed as high a salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content higher than 1.5g per 100g of food item " +
                     "is considered high intake.");
-            score += 10;
+            returnScore += 25;
         } else if (salt <= 1.5 && salt >= 0.3) {
             //Classed as a medium salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content between 0.3g and 1.5g per 100g of food item " +
                     "is considered medium intake.");
-            score += 5;
+            returnScore += 10;
         } else if (salt < 0.3) {
             //Classed as a low salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content lower than 0.3g per 100g of food item " +
                     "is considered low intake");
         }
 
-        return score;
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
+        }
+        return returnScore;
     }
 
     //Function that outputs a no decision from the algorithm
