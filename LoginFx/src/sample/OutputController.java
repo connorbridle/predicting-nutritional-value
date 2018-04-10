@@ -195,8 +195,8 @@ public class OutputController {
         mapOfScores.put("protein", proteinScore);
         mapOfScores.put("salt", saltScore);
 
-        overallScore = calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
-                fibreScore + proteinScore + saltScore;
+        overallScore = (calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
+                fibreScore + proteinScore + saltScore)/8;
 
         //Assigning the RDA values from the current row of the csv file
         //Could comment that it is more efficient to use a 2d array here
@@ -253,12 +253,13 @@ public class OutputController {
 
         //If overRDA in any of the macros, no need to do any further calculations
         if (overRDA(output)) {
+            System.out.println("ASSDSDSDASDASD");
             populateComments(macroFailIndex); //Populates the relevant comments array with suitable notification to user
             outputRedDecision(testingDecision, event); //TODO change this to output the proper decision object
             System.out.println("RED -> Not advisable to eat!");
         } else {
             //TODO continue with the decision making and calling the feeder methods
-            makeFinalDecision(overallScore, outputDecisionObject, event);
+            makeFinalDecision(overallScore, arrayOfScores, outputDecisionObject, event);
 //            int calsScore = calculateCaloriesScore(inputtedFoodItem.getItemCals(), currentRow);
 //            int fatScore = calculateFatScore(inputtedFoodItem.getItemFat(), currentRow);
 //            int satFatScore = calculateSatFatScore(inputtedFoodItem.getItemSatFat(), currentRow);
@@ -300,21 +301,44 @@ public class OutputController {
 
 
     //Function that makes the final decision based on an inputted score variable
-    private void makeFinalDecision(int score, DecisionObject object, ActionEvent event) {
+    private void makeFinalDecision(int score, int[] scores, DecisionObject object, ActionEvent event) {
         //TODO maybe remove score and object here and replace them with global static variables
         System.out.println("MAKE FINAL DECISION FUNCTION SCORE: " + score);
-        if (overallScore < 100) {
-            //Output decision green
-            System.out.println("SCORE LESS THAN 100: OUTPUT GREEN");
-            outputGreenDecision(object, event);
-        } else if (overallScore < 200 && score > 100) {
-            //Output decision amber
-            System.out.println("SCORE BETWEEN 100 AND 200: OUTPUT AMBER");
-            outputAmberDecision(object, event);
-        } else {
-            //Output decision red
-            System.out.println("ELSE: OUTPUT RED");
+//        if (overallScore < 100) {
+//            //Output decision green
+//            System.out.println("SCORE LESS THAN 100: OUTPUT GREEN");
+//            outputGreenDecision(object, event);
+//        } else if (overallScore < 200 && score > 100) {
+//            //Output decision amber
+//            System.out.println("SCORE BETWEEN 100 AND 200: OUTPUT AMBER");
+//            outputAmberDecision(object, event);
+//        } else {
+//            //Output decision red
+//            System.out.println("ELSE: OUTPUT RED");
+//            outputRedDecision(object, event);
+//        }
+
+        //New decision section
+        boolean isOver = false;
+        ArrayList<Integer> overIndex = new ArrayList<>();
+        for (int i = 0; i < scores.length; i++) {
+            if (scores[i] >= 50) {
+                isOver = true;
+                overIndex.add(scores[i]);
+            }
+        }
+        if (isOver) {
+            //RED
             outputRedDecision(object, event);
+        } else if (score <= 100 && score > 60) {
+            //If overall scores is over a certain point
+            outputRedDecision(object, event);
+        } else if (score <= 60 && score > 40) {
+            //if overall scores are over certain point and under upper threshold
+            outputAmberDecision(object, event);
+        } else if (score <= 40 && score > 0) {
+            //If scores are below a certain point
+            outputGreenDecision(object, event);
         }
     }
 
@@ -404,7 +428,7 @@ public class OutputController {
     //TODO might be better to have all these functions as a single one, and pass in the food item value and rda for each
     //Calculates a score for the calories contained in the food item
 
-    private static int calculateCaloriesScore(double cals, List<String> currentRow, ProfileObject person) {
+    protected static int calculateCaloriesScore(double cals, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
         int returnScore = (int)percentage;
@@ -441,7 +465,7 @@ public class OutputController {
     }
 
     //Calculates a score for the fat contained in the food item
-    private static int calculateFatScore(double fat, List<String> currentRow, ProfileObject person) {
+    protected static int calculateFatScore(double fat, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = (fat / (Double.parseDouble(currentRow.get(2))) ) * 100;
         int returnScore = (int)percentage;
@@ -483,14 +507,17 @@ public class OutputController {
         if (returnScore > 100) {
             returnScore = 100;
         }
+        System.out.println("RETURN SCORE !!!!" + returnScore);
         return returnScore;
     }
 
     //Calculates a score for the satfat contained in the food item
-    private static int calculateSatFatScore(double satFat, List<String> currentRow, ProfileObject person) {
+    protected static int calculateSatFatScore(double satFat, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
         int returnScore = (int)percentage;
+        System.out.println("TESTING!@£@£@£@£@£");
+        //BASE MEASURES
         //Eat-well guide measures
         if (satFat >= 5) {
             //Classed as high satfat content per 100g by the eat-well guide
@@ -508,7 +535,49 @@ public class OutputController {
                     "100g of food is considered low intake.");
         }
 
+        //WITH ADDITIONAL MEASURES
         //sat fat and activity level
+        if (satFat >= 5) {
+            if (outputPerson.getGoal() == Goal.LOSE) {
+                satFatComments.add("Eating high levels of saturated fat when you are trying to lose weight " +
+                        "is not productive.");
+                returnScore += 25;
+            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                satFatComments.add("Eating high levels of saturated fat when maintaining weight is not " +
+                        "productive and may lead to weight gain.");
+                returnScore += 25;
+            } else if (outputPerson.getGoal() == Goal.GAIN) {
+                satFatComments.add("Eating high levels of saturated is general bad for your body and heart " +
+                        "regardless of weight-loss goal.");
+                returnScore += 25;
+            }
+        } else if (satFat > 1.5 && satFat < 5) {
+            if (outputPerson.getGoal() == Goal.LOSE) {
+                satFatComments.add("Eating medium levels of saturated fat when attempting to lose weight can " +
+                        "be unproductive.");
+                returnScore += 25;
+            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                satFatComments.add("Eating medium levels of saturated fat when maintaining weight can be bad " +
+                        "for your heart.");
+                returnScore += 10;
+            } else if (outputPerson.getGoal() == Goal.GAIN) {
+                satFatComments.add("Eating medium levels of saturated fat when gaining weight can be bad for your heart.");
+                returnScore += 10;
+            }
+        } else if (satFat <= 1.5) {
+            if (outputPerson.getGoal() == Goal.LOSE) {
+                satFatComments.add("Eating low levels of saturated fat when attempting to lose weight is recommended.");
+                returnScore += 0;
+            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                satFatComments.add("Eating low levels of saturated fat when maintaining body weight is good.");
+                returnScore += 0;
+            } else if (outputPerson.getGoal() == Goal.GAIN) {
+                satFatComments.add("Eating low levels of saturated fat when attempting to gain weight is good. " +
+                        "Eating more of other macronutrients will yield better results while keeping you healthy.");
+                returnScore += 0;
+            }
+        }
+
         if (satFat >= 5 && outputPerson.getGoal() == Goal.LOSE) {
             satFatComments.add("Eating high levels of Saturated fat when you are trying to lose weight " +
                     "is not productive.");
@@ -526,10 +595,153 @@ public class OutputController {
     }
 
     //Calculates a score for the carbs contained in the food item
-    private static int calculateCarbsScore(double carbs, List<String> currentRow, ProfileObject person) {
+    protected static int calculateCarbsScore(double carbs, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (carbs / (Double.parseDouble(currentRow.get(4))) ) * 100;
         int returnScore = (int)percentage;
+
+        //Values taken from health.gov guidelines article.
+        if (carbs > 40) {
+            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to lose weight is unproductive.");
+                    returnScore += 25;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
+                            "and whilst maintaining current weight may cause weight gain.");
+                    returnScore += 25;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to gain weight could be beneficial.");
+                }
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to lose weight is unproductive.");
+                    returnScore += 25;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to maintain weight could cause an increase in weight.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to gain weight may cause weight gain.");
+                    returnScore += 0;
+                }
+
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to lose weight could be unproductive.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to maintain weight could cause weight gain.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to gain weight could cause weight gain.");
+                    returnScore += 0;
+                }
+            }
+
+        } else if (carbs < 32 && carbs > 10) {
+            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to lose weight may cause weight gain.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to maintain weight could result in weight gain.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to gain weight could be productive to your goals.");
+                    returnScore += 0;
+                }
+
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to lose weight could be unproductive to your goals.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to maintain weight could cause a small amount of weight gain.");
+                    returnScore += 10;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to gain weight could be productive to your goals.");
+                    returnScore += 0;
+                }
+
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to lose weight is good for a source of energy.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a medium amount of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to lose weight is good for a source of energy.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a larger serving of carbohydrates could be beneficial whilst at a high " +
+                            "level of activity and whilst trying to gain weight.");
+                    returnScore += 10;
+                }
+
+            }
+
+        } else if (carbs < 10) {
+            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to lose weight is ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to maintain weight can be deemed as ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
+                            "and whilst trying to gain weight can be deemed as ok.");
+                    returnScore += 0;
+                }
+
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to lose weight can be deemed as ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to maintain weight can be deemed as ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
+                            "and whilst trying to gain weight can be deemed as ok.");
+                    returnScore += 0;
+                }
+
+            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+                if (outputPerson.getGoal() == Goal.LOSE) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to lose weight can be deemed as ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to maintain weight can be deemed as ok.");
+                    returnScore += 0;
+                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                    carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
+                            "and whilst trying to gain weight can be deemed as ok.");
+                    returnScore += 0;
+                }
+
+            }
+        }
 
         //Consuming dietary carbs after exhausted exercise has been clearly demonstrated
         if (carbs > 50 && outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
@@ -543,7 +755,7 @@ public class OutputController {
 
     //Calculates a score for the sugars contained in the food item
     //MAX SCORE = 100% +10
-    private static int calculateSugarsScore(double sugars, List<String> currentRow, ProfileObject person) {
+    protected static int calculateSugarsScore(double sugars, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (sugars / (Double.parseDouble(currentRow.get(5))) ) * 100;
         int returnScore = (int)percentage;
@@ -603,7 +815,7 @@ public class OutputController {
     }
 
     //Calculates a score for the fibre contained in the food item
-    private static int calculateFibreScore(double fibre, List<String> currentRow, ProfileObject person) {
+    protected static int calculateFibreScore(double fibre, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (fibre / (Double.parseDouble(currentRow.get(6))) ) * 100;
         int returnScore = (int)percentage;
@@ -629,7 +841,7 @@ public class OutputController {
     }
 
     //Calculates a score for the protein contained in the food item
-    private static int calculateProteinScore(double protein, List<String> currentRow, ProfileObject person) {
+    protected static int calculateProteinScore(double protein, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (protein / (Double.parseDouble(currentRow.get(7))) ) * 100;
         int returnScore = (int)percentage;
@@ -769,7 +981,7 @@ public class OutputController {
         }
     }
 
-    private static int returnRowIndex(int age) {
+    protected static int returnRowIndex(int age) {
         return (age - 18);
     }
 

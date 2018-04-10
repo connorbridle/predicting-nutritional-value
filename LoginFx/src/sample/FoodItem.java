@@ -22,7 +22,7 @@ public class FoodItem {
         itemFibre = new SimpleDoubleProperty(fibre);
         itemProtein = new SimpleDoubleProperty(protein);
         itemSodium = new SimpleDoubleProperty(sodium);
-        this.button = new Button("Select Item");
+//        this.button = new Button("Select Item");
     }
 
     //Get methods for the private variables

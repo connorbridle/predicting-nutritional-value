@@ -136,7 +136,7 @@ public class IndexController {
                         || saltText.getText().equals("")))
                 {
                     //If all values are below 100g
-                    if (Double.parseDouble(caloriesText.getText()) < 100 && Double.parseDouble(fatText.getText()) < 100 &&
+                    if (Double.parseDouble(fatText.getText()) < 100 &&
                             Double.parseDouble(satFatText.getText()) < 100 && Double.parseDouble(carbsText.getText()) < 100 &&
                             Double.parseDouble(sugarText.getText()) < 100 && Double.parseDouble(fibreText.getText()) < 100 &&
                             Double.parseDouble(proteinText.getText()) < 100 && Double.parseDouble(saltText.getText()) < 100) {
