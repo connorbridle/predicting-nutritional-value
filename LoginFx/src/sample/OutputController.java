@@ -230,6 +230,24 @@ public class OutputController {
         outputPerson.setTotalIntakeProtein(totalIntakeProtein);
         outputPerson.setTotalIntakeSalt(totalIntakeSalt);
 
+        //store the output person into an object file
+        try {
+            FileOutputStream fileInput =  new FileOutputStream(new File("profileObject.txt"));
+            ObjectOutputStream objectInput = new ObjectOutputStream(fileInput);
+            objectInput.writeObject(outputPerson);
+
+            //Close streams
+            objectInput.close();
+            fileInput.close();
+        } catch (FileNotFoundException fnf) {
+            fnf.printStackTrace();
+            System.out.println("File not found!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("IO Exception!");
+        }
+
         //Add all the components to the null DecisionObject
         outputDecisionObject.setCalsComments(calsComments);
         outputDecisionObject.setFatComments(fatComments);
@@ -434,28 +452,31 @@ public class OutputController {
         int returnScore = (int)percentage;
 
         //Calories and weight loss goal
-        if (cals > 250 && outputPerson.getGoal() == Goal.LOSE && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+        if (cals > 250 && person.getGoal() == Goal.LOSE && person.getActivityLevel() == ActivityLevel.LOW) {
             calsComments.add("Consuming a large serving of calories whilst trying to lose weight and whilst at " +
                     "a low level of activity can be unproductive to reach your aims.");
             returnScore += 25;
-        } else if (cals > 250 && outputPerson.getGoal() == Goal.MAINTAIN && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+        } else if (cals > 250 && person.getGoal() == Goal.MAINTAIN && person.getActivityLevel() == ActivityLevel.LOW) {
             returnScore += 10;
-        } else if (cals > 250 && outputPerson.getGoal() == Goal.LOSE) {
+        } else if (cals > 250 && person.getGoal() == Goal.LOSE) {
             calsComments.add("Consuming large amounts of calories in one serving when attempting to lose " +
                     "weight is unproductive.");
             returnScore += 25;
-        } else if (cals > 250 && outputPerson.getGoal() == Goal.MAINTAIN) {
+        } else if (cals > 250 && person.getGoal() == Goal.MAINTAIN) {
             calsComments.add("Consuming large amounts of calories in one serving can cause an increase in body " +
                     "weight.");
             returnScore += 10;
         }
-
         //Large food intake before bed could lead to obesity
         calendar.setTime(date);
         int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
         if (currentTime > 21 && cals < 250) {
             calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
                     "risk of obesity");
+        } else if (currentTime > 21 && cals < 250) {
+            calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
+                    "risk of obesity");
+            returnScore += 25;
         }
         //If the score happens to exceed 100, then set the score to the max value (100)
         if (returnScore > 100) {
@@ -488,17 +509,17 @@ public class OutputController {
         }
 
         //Goal and activity level measures
-        if (fat >= 21 && outputPerson.getGoal() == Goal.LOSE && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+        if (fat >= 21 && person.getGoal() == Goal.LOSE && person.getActivityLevel() == ActivityLevel.LOW) {
             fatComments.add("Consuming large amounts of fat whilst trying to lose weight and with a current low activity " +
                     "level is unproductive.");
             returnScore += 25;
-        } else if(fat >= 21 && outputPerson.getGoal() == Goal.MAINTAIN && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+        } else if(fat >= 21 && person.getGoal() == Goal.MAINTAIN && person.getActivityLevel() == ActivityLevel.LOW) {
             fatComments.add("Consuming large amounts of fat with a low exercise rate can lead to weight increase.");
             returnScore += 10;
-        } else if(fat >= 21 && outputPerson.getGoal() == Goal.LOSE) {
+        } else if(fat >= 21 && person.getGoal() == Goal.LOSE) {
             fatComments.add("Consuming large amounts of protein when trying to lose weight is unproductive");
             returnScore += 25;
-        } else if (fat >= 21 && outputPerson.getGoal() == Goal.MAINTAIN) {
+        } else if (fat >= 21 && person.getGoal() == Goal.MAINTAIN) {
             fatComments.add("Consuming large amounts of calories in one serving can cause a weight increase.");
             returnScore += 10;
         }
@@ -516,7 +537,6 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage  = ( satFat / (Double.parseDouble(currentRow.get(3))) ) * 100;
         int returnScore = (int)percentage;
-        System.out.println("TESTING!@£@£@£@£@£");
         //BASE MEASURES
         //Eat-well guide measures
         if (satFat >= 5) {
@@ -538,51 +558,51 @@ public class OutputController {
         //WITH ADDITIONAL MEASURES
         //sat fat and activity level
         if (satFat >= 5) {
-            if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getGoal() == Goal.LOSE) {
                 satFatComments.add("Eating high levels of saturated fat when you are trying to lose weight " +
                         "is not productive.");
                 returnScore += 25;
-            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+            } else if (person.getGoal() == Goal.MAINTAIN) {
                 satFatComments.add("Eating high levels of saturated fat when maintaining weight is not " +
                         "productive and may lead to weight gain.");
                 returnScore += 25;
-            } else if (outputPerson.getGoal() == Goal.GAIN) {
+            } else if (person.getGoal() == Goal.GAIN) {
                 satFatComments.add("Eating high levels of saturated is general bad for your body and heart " +
                         "regardless of weight-loss goal.");
                 returnScore += 25;
             }
         } else if (satFat > 1.5 && satFat < 5) {
-            if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getGoal() == Goal.LOSE) {
                 satFatComments.add("Eating medium levels of saturated fat when attempting to lose weight can " +
                         "be unproductive.");
                 returnScore += 25;
-            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+            } else if (person.getGoal() == Goal.MAINTAIN) {
                 satFatComments.add("Eating medium levels of saturated fat when maintaining weight can be bad " +
                         "for your heart.");
                 returnScore += 10;
-            } else if (outputPerson.getGoal() == Goal.GAIN) {
+            } else if (person.getGoal() == Goal.GAIN) {
                 satFatComments.add("Eating medium levels of saturated fat when gaining weight can be bad for your heart.");
                 returnScore += 10;
             }
         } else if (satFat <= 1.5) {
-            if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getGoal() == Goal.LOSE) {
                 satFatComments.add("Eating low levels of saturated fat when attempting to lose weight is recommended.");
                 returnScore += 0;
-            } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+            } else if (person.getGoal() == Goal.MAINTAIN) {
                 satFatComments.add("Eating low levels of saturated fat when maintaining body weight is good.");
                 returnScore += 0;
-            } else if (outputPerson.getGoal() == Goal.GAIN) {
+            } else if (person.getGoal() == Goal.GAIN) {
                 satFatComments.add("Eating low levels of saturated fat when attempting to gain weight is good. " +
                         "Eating more of other macronutrients will yield better results while keeping you healthy.");
                 returnScore += 0;
             }
         }
 
-        if (satFat >= 5 && outputPerson.getGoal() == Goal.LOSE) {
+        if (satFat >= 5 && person.getGoal() == Goal.LOSE) {
             satFatComments.add("Eating high levels of Saturated fat when you are trying to lose weight " +
                     "is not productive.");
             returnScore += 25;
-        } else if (satFat >= 5 && outputPerson.getGoal() == Goal.MAINTAIN) {
+        } else if (satFat >= 5 && person.getGoal() == Goal.MAINTAIN) {
             satFatComments.add("Eating high levels of Saturated fat could lead to an increase in weight, " +
                     "therefore it is advisable to avoid");
         }
@@ -602,44 +622,44 @@ public class OutputController {
 
         //Values taken from health.gov guidelines article.
         if (carbs > 40) {
-            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getActivityLevel() == ActivityLevel.LOW) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to lose weight is unproductive.");
                     returnScore += 25;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
                             "and whilst maintaining current weight may cause weight gain.");
                     returnScore += 25;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to gain weight could be beneficial.");
                 }
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to lose weight is unproductive.");
                     returnScore += 25;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to maintain weight could cause an increase in weight.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to gain weight may cause weight gain.");
                     returnScore += 0;
                 }
 
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.HIGH) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to lose weight could be unproductive.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to maintain weight could cause weight gain.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming large quantities of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to gain weight could cause weight gain.");
                     returnScore += 0;
@@ -647,46 +667,46 @@ public class OutputController {
             }
 
         } else if (carbs < 32 && carbs > 10) {
-            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getActivityLevel() == ActivityLevel.LOW) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to lose weight may cause weight gain.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to maintain weight could result in weight gain.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to gain weight could be productive to your goals.");
                     returnScore += 0;
                 }
 
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to lose weight could be unproductive to your goals.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to maintain weight could cause a small amount of weight gain.");
                     returnScore += 10;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to gain weight could be productive to your goals.");
                     returnScore += 0;
                 }
 
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.HIGH) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to lose weight is good for a source of energy.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a medium amount of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to lose weight is good for a source of energy.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a larger serving of carbohydrates could be beneficial whilst at a high " +
                             "level of activity and whilst trying to gain weight.");
                     returnScore += 10;
@@ -695,46 +715,46 @@ public class OutputController {
             }
 
         } else if (carbs < 10) {
-            if (outputPerson.getActivityLevel() == ActivityLevel.LOW) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            if (person.getActivityLevel() == ActivityLevel.LOW) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to lose weight is ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to maintain weight can be deemed as ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a low level of activity " +
                             "and whilst trying to gain weight can be deemed as ok.");
                     returnScore += 0;
                 }
 
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.MEDIUM) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to lose weight can be deemed as ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to maintain weight can be deemed as ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a medium level of activity " +
                             "and whilst trying to gain weight can be deemed as ok.");
                     returnScore += 0;
                 }
 
-            } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
-                if (outputPerson.getGoal() == Goal.LOSE) {
+            } else if (person.getActivityLevel() == ActivityLevel.HIGH) {
+                if (person.getGoal() == Goal.LOSE) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to lose weight can be deemed as ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.MAINTAIN) {
+                } else if (person.getGoal() == Goal.MAINTAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to maintain weight can be deemed as ok.");
                     returnScore += 0;
-                } else if (outputPerson.getGoal() == Goal.GAIN) {
+                } else if (person.getGoal() == Goal.GAIN) {
                     carbsComments.add("Consuming a small serving of carbohydrates whilst at a high level of activity " +
                             "and whilst trying to gain weight can be deemed as ok.");
                     returnScore += 0;
@@ -744,7 +764,7 @@ public class OutputController {
         }
 
         //Consuming dietary carbs after exhausted exercise has been clearly demonstrated
-        if (carbs > 50 && outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+        if (carbs > 50 && person.getActivityLevel() == ActivityLevel.HIGH) {
             carbsComments.add("Consuming carbohydrates just before or after exhaustive exercise can result in " +
                     "hypoglycemia and early onset exhaustion.");
             returnScore += 10;
@@ -778,23 +798,23 @@ public class OutputController {
         }
 
         //Sugars and weight goals
-        if (sugars > 15 && outputPerson.getGoal() == Goal.LOSE) {
+        if (sugars > 15 && person.getGoal() == Goal.LOSE) {
             sugarsComments.add("Consuming large portions of sugar is detrimental to your weight loss goal.");
             returnScore += 25;
-        } else if (sugars > 15 && outputPerson.getGoal() == Goal.MAINTAIN) {
+        } else if (sugars > 15 && person.getGoal() == Goal.MAINTAIN) {
             sugarsComments.add("Consuming large portions of sugar and sugary snacks can lead to weight " +
                     "gain.");
         }
 
         //Sugars and exercise
-        if (sugars <=15 && sugars >=6 && outputPerson.getActivityLevel() == ActivityLevel.HIGH) {
+        if (sugars <=15 && sugars >=6 && person.getActivityLevel() == ActivityLevel.HIGH) {
             sugarsComments.add("Consuming a moderate amount of sugar during exercise can increase " +
                     "energy stores.");
-        } else if (sugars <=15 && sugars >=6 && outputPerson.getActivityLevel() == ActivityLevel.MEDIUM) {
+        } else if (sugars <=15 && sugars >=6 && person.getActivityLevel() == ActivityLevel.MEDIUM) {
             sugarsComments.add("Consuming a moderate amount of sugar during mild exercise may be detrimental " +
                     "to your efforts.");
             returnScore += 10;
-        } else if (sugars > 15 && outputPerson.getActivityLevel() == ActivityLevel.LOW) {
+        } else if (sugars > 15 && person.getActivityLevel() == ActivityLevel.LOW) {
             sugarsComments.add("Consuming a moderate amount of sugar in low periods of exercise is not advisable.");
             returnScore += 25;
         }
@@ -821,14 +841,13 @@ public class OutputController {
         int returnScore = (int)percentage;
 
         //High fibre diet in woman cuts breast cancer risk (NHS)
-        if (fibre > 10 && outputPerson.getGender() == Gender.FEMALE) {
+        if (fibre > 10 && person.getGender() == Gender.FEMALE) {
             fibreComments.add("The NHS posted an article suggested that young women with a high fibre diet " +
                     "may have a lower breast cancer risk.");
-        } else if (fibre < 10 && outputPerson.getGender() == Gender.FEMALE) {
+        } else if (fibre < 10 && person.getGender() == Gender.FEMALE) {
             fibreComments.add("The NHS posted an article suggesting high fibre intake for young women could reduce " +
                     "breast cancer risk.");
-        } else if (fibre > 10 && (outputPerson.getGender() == Gender.MALE || outputPerson.getGender() == Gender.FEMALE)) {
-            System.out.println("THIS SHIT IS LIT FAM");
+        } else if (fibre > 10 && (person.getGender() == Gender.MALE || person.getGender() == Gender.FEMALE)) {
             fibreComments.add("The NHS posted an article conducted by British and Dutch researchers that suggested " +
                     "high fibre intake could could reduce the risk of colorectal cancer.");
         }
@@ -854,17 +873,17 @@ public class OutputController {
         }
 
         //According to EU, food that has protein content of over 20% of total energy value is considered high protein
-        if(outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30 && outputPerson.getGoal() ==
+        if(person.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30 && person.getGoal() ==
                 Goal.GAIN) {
             proteinComments.add("This food item is high in protein according to the European Commission!");
             proteinComments.add("Consuming protein during, before or after high levels of exercise is said to " +
                     "be a good way to increase muscle mass!");
             //Score decrease
-        } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30
-                && outputPerson.getGoal() == Goal.LOSE) {
+        } else if (person.getActivityLevel() == ActivityLevel.HIGH && protein > 20 && protein < 30
+                && person.getGoal() == Goal.LOSE) {
             proteinComments.add("High protein whilst trying to loose weight is said to be fine as long as the protein " +
                     "is not contributing to excess calories");
-        } else if (outputPerson.getActivityLevel() == ActivityLevel.HIGH && protein < 5) {
+        } else if (person.getActivityLevel() == ActivityLevel.HIGH && protein < 5) {
             proteinComments.add("It may be beneficial to consume a food item higher in protein after or before " +
                     "exercise to maximise the benefit.");
             returnScore += 10;
@@ -882,22 +901,23 @@ public class OutputController {
 
     //Calculates a score for the fibre contained in the food item
     //MAX SCORE = 100% + 10
-    private static int calculateSaltScore(double salt, List<String> currentRow, ProfileObject person) {
+    protected static int calculateSaltScore(double salt, List<String> currentRow, ProfileObject person) {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (salt/ (Double.parseDouble(currentRow.get(8))) ) * 100;
         int returnScore = (int)percentage;
+        System.out.println(percentage);
 
         //Eat-well guide measures
         if (salt > 1.5) {
             //Classed as high a salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content higher than 1.5g per 100g of food item " +
                     "is considered high intake.");
-            returnScore += 25;
+            returnScore += 50;
         } else if (salt <= 1.5 && salt >= 0.3) {
             //Classed as a medium salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content between 0.3g and 1.5g per 100g of food item " +
                     "is considered medium intake.");
-            returnScore += 10;
+            returnScore += 25;
         } else if (salt < 0.3) {
             //Classed as a low salt content item per 100g by the eat-well guide
             saltComments.add("Eatwell guide suggests salt content lower than 0.3g per 100g of food item " +

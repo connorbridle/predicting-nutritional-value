@@ -1,6 +1,8 @@
 package sample;
 
-public class ProfileObject {
+import java.io.Serializable;
+
+public class ProfileObject implements Serializable {
 
     private int age;
     private String username;

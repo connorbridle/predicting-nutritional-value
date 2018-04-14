@@ -9,17 +9,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DetailedResultsController {
+public class DetailedResultsController implements Initializable {
 
     private static FoodItem outputFoodItem;
     private static DecisionObject outputDecision;
@@ -32,6 +36,10 @@ public class DetailedResultsController {
     Label calsLabel, fatLabel, satFatLabel, carbsLabel, sugarsLabel, fibreLabel, proteinLabel, saltLabel;
     @FXML
     VBox calsCom, fatCom, satFatCom, carbsCom, sugarsCom, fibreCom, proteinCom, saltCom;
+    @FXML
+    ScrollPane calsScroll;
+    @FXML
+    GridPane grid;
 
     public void continueToNext(ActionEvent event) {
         try {
@@ -108,40 +116,91 @@ public class DetailedResultsController {
 
         //Calories comments
         for (int i = 0; i < outputDecision.getCalsComments().size(); i++) {
-            calsCom.getChildren().add(new Label(outputDecision.getCalsComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getCalsComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            calsCom.getChildren().add(newText);
         }
         //Fat comments
         for (int i = 0; i < outputDecision.getFatComments().size(); i++) {
-            fatCom.getChildren().add(new Label(outputDecision.getFatComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getFatComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            fatCom.getChildren().add(newText);
         }
         //Saturated Fat comments
         for (int i = 0; i < outputDecision.getSatFatComments().size(); i++) {
-            Label label = new Label(outputDecision.getSatFatComments().get(i));
-            label.setMaxHeight(500);
-            label.setWrapText(true);
-            label.setTextAlignment(TextAlignment.JUSTIFY);
-            satFatCom.getChildren().add(new Label("TESTING@£$"));
-            satFatCom.getChildren().add(label);
+            TextArea newText = new TextArea(outputDecision.getSatFatComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            satFatCom.getChildren().add(newText);
         }
         //Carbohydrates comments
         for (int i = 0; i < outputDecision.getCarbsComments().size(); i++) {
-            carbsCom.getChildren().add(new Label(outputDecision.getCarbsComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getCarbsComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            carbsCom.getChildren().add(newText);
         }
         //Sugars comments
         for (int i = 0; i < outputDecision.getSugarsComments().size(); i++) {
-            sugarsCom.getChildren().add(new Label(outputDecision.getSugarsComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getSugarsComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            sugarsCom.getChildren().add(newText);
         }
         //fibre comments
         for (int i = 0; i < outputDecision.getFibreComments().size(); i++) {
-            fibreCom.getChildren().add(new Label(outputDecision.getFibreComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getFibreComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            fibreCom.getChildren().add(newText);
         }
         //protein comments
         for (int i = 0; i < outputDecision.getProteinComments().size(); i++) {
-            proteinCom.getChildren().add(new Label(outputDecision.getProteinComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getProteinComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            proteinCom.getChildren().add(newText);
         }
         //Salt comments
         for (int i = 0; i < outputDecision.getSaltComments().size(); i++) {
-            saltCom.getChildren().add(new Label(outputDecision.getSaltComments().get(i)));
+            TextArea newText = new TextArea(outputDecision.getSaltComments().get(i));
+            newText.setWrapText(true);
+            newText.setEditable(false);
+            newText.setFocusTraversable(false);
+            newText.setMinWidth(300);
+            newText.setPrefWidth(300);
+            newText.setMaxWidth(300);
+            saltCom.getChildren().add(newText);
         }
 
     }
@@ -323,5 +382,15 @@ public class DetailedResultsController {
     public void saltButton(ActionEvent event) {
         int index = 8;
         openGraphView(event,index);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        grid = new GridPane();
+        grid.setHgap(20);
+        grid.setVgap(20);
+        grid.setGridLinesVisible(true);
+        calsScroll = new ScrollPane();
+        calsScroll.setMaxWidth(400);
     }
 }

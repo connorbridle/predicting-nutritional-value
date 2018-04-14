@@ -12,11 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.*;
-import java.io.IOException;
 
 public class IndexController {
     @FXML
@@ -31,6 +28,8 @@ public class IndexController {
     Button clearDay;
     @FXML
     Button submitButton;
+    @FXML
+    Button newProfile;
 
     //Labels for the RDA
     @FXML
@@ -333,5 +332,29 @@ public class IndexController {
     }
 
 
+    public void newProfile(ActionEvent event) {
+        try {
+            //Deletes the objects held within the file
+            new FileOutputStream("profileObject.txt").close();
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("PersonalInput.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            PersonalInputController controller = loader.getController();
+            controller.loadNullProfile();
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Home");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Input Output Exception");
+        }
+    }
 
 }

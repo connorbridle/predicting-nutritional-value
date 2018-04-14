@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -19,16 +18,16 @@
    <top>
       <HBox alignment="CENTER" prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: #1e90ff#1e90ff;" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton text="Start new day">
+            <Button fx:id="newProfile" mnemonicParsing="false" onAction="#newProfile" text="Create New Profile">
                <HBox.margin>
                   <Insets left="20.0" right="20.0" />
                </HBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="sampleFoodButton" buttonType="RAISED" onAction="#sampleFoods" text="Load Sample Food">
+            </Button>
+            <Button fx:id="sampleFoodButton" mnemonicParsing="false" onAction="#sampleFoods" text="Load Sample Food">
                <HBox.margin>
                   <Insets left="20.0" right="20.0" />
                </HBox.margin>
-            </JFXButton>
+            </Button>
             <Button fx:id="informationButton" mnemonicParsing="false" onAction="#displayInformation" text="Input information">
                <HBox.margin>
                   <Insets left="20.0" right="20.0" />
@@ -61,7 +60,7 @@
       <AnchorPane prefWidth="700.0" BorderPane.alignment="CENTER">
       
          <children>
-            <Label layoutX="79.0" layoutY="65.0" text="Enter Macronutrient Breakdown">
+            <Label layoutX="35.0" layoutY="69.0" text="Enter Macronutrient Breakdown per 100g">
                <font>
                   <Font size="18.0" />
                </font>

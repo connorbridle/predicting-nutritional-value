@@ -14,13 +14,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PersonalInputController implements Initializable {
     @FXML
     Button submitButton;
+    @FXML
+    Button loadProfileButton;
 
     //Inputs from user
     @FXML
@@ -39,6 +41,8 @@ public class PersonalInputController implements Initializable {
     AnchorPane anchor;
     @FXML
     RadioButton disclaimer;
+
+    Stage primaryStage;
 
     //PersonalObject variable to pass to index method
     ProfileObject outputProfile;
@@ -87,7 +91,7 @@ public class PersonalInputController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("IOexception thrown and caught!");
+            System.out.println("IO exception thrown and caught!");
         }
     }
 
@@ -98,7 +102,7 @@ public class PersonalInputController implements Initializable {
     }
 
     //Function that loads all the user inputs into a ProfileObject
-    private void loadInputsToObject() {
+    protected void loadInputsToObject() {
         try {
             String inputName = name.getText();
             int inputAge = Integer.parseInt(age.getText());
@@ -162,21 +166,6 @@ public class PersonalInputController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        mainInput = new VBox();
-//        goalCombo = new ChoiceBox();
-//        goalCombo.setItems(FXCollections.observableArrayList("Lose","Maintain","Gain"));
-//        mainInput.getChildren().add(goalCombo);
-//        anchor.getChildren().add(mainInput);
-////        goalCombo.getItems().setAll("Lose", "Maintain", "Gain");
-////        goalCombo.setPromptText("Testing");
-////        goalCombo.setEditable(true);
-//        activityCombo = new ChoiceBox(FXCollections.observableArrayList("Low","Med","High"));
-////        activityCombo.getItems().setAll("Low", "Medium", "High");
-////        activityCombo.setEditable(true);
-//        genderCombo = new ChoiceBox(FXCollections.observableArrayList("Male","Female","Other"));
-////        genderCombo.getItems().setAll("Male", "Female", "Other");
-////        genderCombo.setEditable(true);
-//
 
     }
 
@@ -194,6 +183,56 @@ public class PersonalInputController implements Initializable {
         alert.setHeaderText("Software application disclaimer");
         alert.setContentText("Here holds the disclaimer information for the application.");
         alert.showAndWait();
+    }
+
+    protected void loadNullProfile() {
+        outputProfile = null;
+        testingFunction();
+    }
+
+    public void loadSavedProfile(ActionEvent event) {
+        try {
+            //If a file already object already exists in the profileObject file
+            FileInputStream fileInput = new FileInputStream(new File("profileObject.txt"));
+            ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+            //Read object
+            outputProfile = (ProfileObject)objectInput.readObject();
+
+            //New window code
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("index.fxml"));
+            Parent outputView = loader.load();
+
+            //access the controller and call the method
+            IndexController controller = loader.getController();
+            controller.loadProfileObject(outputProfile);
+
+            Scene newScene = new Scene(outputView);
+            Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            primaryStage.setTitle("Home");
+            primaryStage.setScene(newScene);
+            primaryStage.show();
+            //end new window code
+
+        } catch (FileNotFoundException fnf) {
+            fnf.printStackTrace();
+            System.out.println("File Not Found!");
+        } catch (EOFException e) {
+            outputProfile = null;
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Load Profile Fail");
+            alert.setHeaderText("No Profile Found!");
+            alert.setContentText("No saved profile was found! Please create a new one using the input boxes provided.");
+            alert.showAndWait();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Input Output Error!");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Class Not Found!");
+        }
     }
 
 }
