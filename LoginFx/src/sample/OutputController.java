@@ -123,7 +123,6 @@ public class OutputController {
     // Main function that communicates with the other feeder functions
     //================================================================================
     public void startPrediction(ActionEvent event) {
-//        outputFoodItem = inputtedFoodItem;
         overallScore = 0;
 
         //Clear the arraylists
@@ -142,7 +141,6 @@ public class OutputController {
                 null, null, null, null, null,
                 null, null, null);
         //Fills 2d array list with csv values
-        //TODO if the person is male, parse male csv, if female parse female csv
         maleRDA = csvParser(maleRDAFilePath);
         femaleRDA = csvParser(femaleRDAFilePath);
         rowIndex = returnRowIndex(inputtedAge); //TODO age input
@@ -166,34 +164,7 @@ public class OutputController {
         int proteinScore = calculateProteinScore(outputFoodItem.getItemProtein(), currentRow, outputPerson);
         int saltScore = calculateSaltScore(outputFoodItem.getItemSodium(), currentRow, outputPerson);
         int[] arrayOfScores = new int[]{calsScore,fatScore,satFatScore,carbsScore,sugarsScore,fibreScore,proteinScore,saltScore};
-//        int[] normalisedScores = new int[8];
-//
-//        //Scaling down between 1 and 10
-//        int maxRange = Arrays.stream(arrayOfScores).max().getAsInt();
-//        int minRange = Arrays.stream(arrayOfScores).min().getAsInt();
-//        System.out.println("TESTING!@@£@£@£@£: " + maxRange + minRange);
-//        for (int i = 0; i < arrayOfScores.length; i++) {
-//            int beforeScale = arrayOfScores[i];
-//            System.out.println("before scale: " + beforeScale);
-//            int afterScale = scaleNumbersBetween(beforeScale, 0,100,minRange,maxRange);
-//            System.out.println("after scale: " + afterScale);
-//            normalisedScores[i] = afterScale;
-//        }
-//
-//        System.out.println("DSFFDFSDFSF" + arrayOfScores[0]);
-//        System.out.println("DSFFDFSDFSF" + normalisedScores[0]);
-
-
-        //Map to hold the scores calculated by the functions below
-        HashMap<String, Integer> mapOfScores = new HashMap<>();
-        mapOfScores.put("cals", calsScore);
-        mapOfScores.put("fat", fatScore);
-        mapOfScores.put("satFat", satFatScore);
-        mapOfScores.put("carbs", carbsScore);
-        mapOfScores.put("sugars", sugarsScore);
-        mapOfScores.put("fibre", fibreScore);
-        mapOfScores.put("protein", proteinScore);
-        mapOfScores.put("salt", saltScore);
+        System.out.println("Output Scores: " + Arrays.toString(arrayOfScores));
 
         overallScore = (calsScore + fatScore + satFatScore + carbsScore + sugarsScore +
                 fibreScore + proteinScore + saltScore)/8;
@@ -210,26 +181,27 @@ public class OutputController {
         RDA_SALT = Double.parseDouble(currentRow.get(8));
         System.out.println(currentRow);
 
-        //Increment the total variables with the new food item inputted
-        totalIntakeCal += outputFoodItem.getItemCals();
-        totalIntakeFat += outputFoodItem.getItemFat();
-        totalIntakeSatFat += outputFoodItem.getItemSatFat();
-        totalIntakeCarbs += outputFoodItem.getItemCarbs();
-        totalIntakeSugars += outputFoodItem.getItemSugar();
-        totalIntakeFibre += outputFoodItem.getItemFibre();
-        totalIntakeProtein += outputFoodItem.getItemProtein();
-        totalIntakeSalt += outputFoodItem.getItemSodium();
+
 
         //Increment that total variables on the profile object
-        outputPerson.setTotalIntakeCal(totalIntakeCal);
-        outputPerson.setTotalIntakeFat(totalIntakeFat);
-        outputPerson.setTotalIntakeSatFat(totalIntakeSatFat);
-        outputPerson.setTotalIntakeCarbs(totalIntakeCarbs);
-        outputPerson.setTotalIntakeSugars(totalIntakeSugars);
-        outputPerson.setTotalIntakeFibre(totalIntakeFibre);
-        outputPerson.setTotalIntakeProtein(totalIntakeProtein);
-        outputPerson.setTotalIntakeSalt(totalIntakeSalt);
+        outputPerson.sumTotalIntakeCals(outputFoodItem.itemCals.get());
+        outputPerson.sumTotalIntakeFat(outputFoodItem.itemFat.get());
+        outputPerson.sumTotalIntakeSatFat(outputFoodItem.itemSatFat.get());
+        outputPerson.sumTotalIntakeCarbs(outputFoodItem.itemCarbs.get());
+        outputPerson.sumTotalIntakeSugars(outputFoodItem.itemSugar.get());
+        outputPerson.sumTotalIntakeFibre(outputFoodItem.itemFibre.get());
+        outputPerson.sumTotalIntakeProtein(outputFoodItem.itemProtein.get());
+        outputPerson.sumTotalIntakeSalt(outputFoodItem.itemSodium.get());
 
+        //Variables for easy access
+        totalIntakeCal = outputFoodItem.getItemCals();
+        totalIntakeFat = outputFoodItem.getItemFat();
+        totalIntakeSatFat = outputFoodItem.getItemSatFat();
+        totalIntakeCarbs = outputFoodItem.getItemCarbs();
+        totalIntakeSugars = outputFoodItem.getItemSugar();
+        totalIntakeFibre = outputFoodItem.getItemFibre();
+        totalIntakeProtein = outputFoodItem.getItemProtein();
+        totalIntakeSalt = outputFoodItem.getItemSodium();
         //store the output person into an object file
         try {
             FileOutputStream fileInput =  new FileOutputStream(new File("profileObject.txt"));
@@ -306,12 +278,11 @@ public class OutputController {
         return myArray;
     }
 
-    //Function that consolidates and constructs the final decision object that will be fed to the next controller
-    private static void constructDecisionObject() {
-        //TODO change decision object
-        outputDecisionObject = new DecisionObject("amber", outputFoodItem, score, overallScore, calsComments, fatComments,
-                satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
-    }
+//    //Function that consolidates and constructs the final decision object that will be fed to the next controller
+//    private static void constructDecisionObject() {
+//        outputDecisionObject = new DecisionObject("amber", outputFoodItem, score, overallScore, calsComments, fatComments,
+//                satFatComments, carbsComments, sugarsComments, fibreComments, proteinComments, saltComments, generalComments);
+//    }
     //Scales the number between the range provided
 //    private static int scaleNumbersBetween(int numberInput, int minRange, int maxRange, int min, int max) {
 //        return ((maxRange - minRange)*(numberInput-min)) / ((max-min) + minRange);
@@ -320,7 +291,6 @@ public class OutputController {
 
     //Function that makes the final decision based on an inputted score variable
     private void makeFinalDecision(int score, int[] scores, DecisionObject object, ActionEvent event) {
-        //TODO maybe remove score and object here and replace them with global static variables
         System.out.println("MAKE FINAL DECISION FUNCTION SCORE: " + score);
 //        if (overallScore < 100) {
 //            //Output decision green
@@ -451,6 +421,11 @@ public class OutputController {
         double percentage = (cals / (Double.parseDouble(currentRow.get(1))) ) * 100;
         int returnScore = (int)percentage;
 
+        //Base macro measurement comparison
+        if (cals > 250) {
+            returnScore += 25;
+        }
+
         //Calories and weight loss goal
         if (cals > 250 && person.getGoal() == Goal.LOSE && person.getActivityLevel() == ActivityLevel.LOW) {
             calsComments.add("Consuming a large serving of calories whilst trying to lose weight and whilst at " +
@@ -470,12 +445,11 @@ public class OutputController {
         //Large food intake before bed could lead to obesity
         calendar.setTime(date);
         int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
-        if (currentTime > 21 && cals < 250) {
+        if ((currentTime > 21  || currentTime < 8) && cals < 250) {
             calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
                     "risk of obesity");
-        } else if (currentTime > 21 && cals < 250) {
-            calsComments.add("Studies show that smaller meals before bed will not contribute to increased " +
-                    "risk of obesity");
+        } else if ((currentTime > 21 || currentTime < 8) && cals > 250) {
+            calsComments.add("Studies show that nighttime eating of large meals or snacks can contribute to obesity.");
             returnScore += 25;
         }
         //If the score happens to exceed 100, then set the score to the max value (100)
@@ -619,6 +593,16 @@ public class OutputController {
         //First thing to do is to find what percentage the inputted value is compared to the rda
         double percentage = (carbs / (Double.parseDouble(currentRow.get(4))) ) * 100;
         int returnScore = (int)percentage;
+        System.out.println("Percent carbs: " + percentage);
+
+        //Base values on their own from health.gov guidelines article
+        if (carbs > 40) {
+            returnScore += 25;
+        } else if (carbs < 32 && carbs > 10) {
+            returnScore += 10;
+        } else if (carbs < 10) {
+            returnScore += 0;
+        }
 
         //Values taken from health.gov guidelines article.
         if (carbs > 40) {
@@ -770,6 +754,19 @@ public class OutputController {
             returnScore += 10;
         }
 
+        //Eating sugar at night may prevent you from sleeping
+        calendar.setTime(date);
+        int currentTime = calendar.get(Calendar.HOUR_OF_DAY);
+        System.out.println("TIME: " + currentTime);
+        if (currentTime > 21 || currentTime < 8) {
+            carbsComments.add("Eating high portions of carbohydrates close to sleeping periods can keep you awake.");
+            returnScore += 25;
+        }
+
+        //If the score happens to exceed 100, then set the score to the max value (100)
+        if (returnScore > 100) {
+            returnScore = 100;
+        }
         return returnScore;
     }
 
@@ -896,7 +893,7 @@ public class OutputController {
         if (returnScore > 100) {
             returnScore = 100;
         }
-        return 5;
+        return returnScore;
     }
 
     //Calculates a score for the fibre contained in the food item
@@ -942,6 +939,8 @@ public class OutputController {
             //access the controller and call the method
             RedResultController controller = loader.getController();
             controller.storeValues(decisionMade, outputFoodItem, outputPerson, currentRow);
+            System.out.println("outputpart2" + outputPerson.getTotalIntakeCal());
+            System.out.println("outputpart2" + outputPerson.getTotalIntakeFat());
 
             Scene newScene = new Scene(outputView);
             Stage primaryStage = (Stage) ((Node)event.getSource()).getScene().getWindow();

@@ -5,12 +5,17 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ExampleFoodDB">
    <bottom>
-      <Button fx:id="SubmitFoodButton" mnemonicParsing="false" onAction="#submitFoodItemButton" text="Load selected Food Item" BorderPane.alignment="CENTER" />
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="SubmitFoodButton" mnemonicParsing="false" onAction="#submitFoodItemButton" text="Load selected Food Item" />
+         </children>
+      </HBox>
    </bottom>
    <center>
       <TableView fx:id="table" prefHeight="400.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -31,10 +36,14 @@
       </TableView>
    </center>
    <top>
-      <Text fill="#ee2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Database" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="27.0" />
-         </font>
-      </Text>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Database">
+               <font>
+                  <Font size="27.0" />
+               </font>
+            </Text>
+         </children>
+      </HBox>
    </top>
 </BorderPane>

@@ -51,15 +51,14 @@ public class IndexController {
 
 
     //FoodItem variable that will hold the loaded food item
-    private static FoodItem loadedItem = null;
+    private static FoodItem loadedItem;
 
     //ProfileObject variable that will hold any personal factors
-    private static ProfileObject person = null;
+    private static ProfileObject person;
 
     //Function that will load the ProfileObject from the previous stage
     public void loadProfileObject(ProfileObject profile) {
         person = profile;
-        System.out.println("INDEX CLASS: " + person.getTotalIntakeCal());
         //Sets the values in the intake table to updated values
         calsLabel.setText(Double.toString(person.getTotalIntakeCal()));
         fatLabel.setText(Double.toString(person.getTotalIntakeFat()));
@@ -190,6 +189,9 @@ public class IndexController {
                         //Parse and store the food item into the csv file of stored food items
                         parseFoodItem(name, breakdown, "/Users/connorbridle/Desktop/Third-Year-project/typ/LoginFx/src/sample/recordedFoodsToday.csv");
 
+                        System.out.println("TESTING! " + person.getTotalIntakeCal());
+                        System.out.println("TESTING! " + person.getTotalIntakeFat());
+
                         //access the controller and call the method
                         OutputController controller = loader.getController();
                         controller.storeObjectInputs(newFoodItem,person);
@@ -309,6 +311,20 @@ public class IndexController {
 
     //Function that clears the current food intake of macros from the users profile.
     public void clearCurrentDaysIntake(ActionEvent event) {
+        //Sets the values in the Profile object back to 0
+        System.out.println(person.getTotalIntakeCal());
+        System.out.println(person.getTotalIntakeFat());
+        person.setTotalIntakeCal(0);
+        person.setTotalIntakeFat(0);
+        person.setTotalIntakeSatFat(0);
+        person.setTotalIntakeCarbs(0);
+        person.setTotalIntakeSugars(0);
+        person.setTotalIntakeFibre(0);
+        person.setTotalIntakeProtein(0);
+        person.setTotalIntakeSalt(0);
+        System.out.println(person.getTotalIntakeCal());
+        System.out.println(person.getTotalIntakeFat());
+
 
         //Changes the labels to zero
         calsLabel.setText("0.0");
@@ -320,15 +336,6 @@ public class IndexController {
         proteinLabel.setText("0.0");
         saltLabel.setText("0.0");
 
-        //Sets the values in the Profile object back to 0
-        person.setTotalIntakeCal(0);
-        person.setTotalIntakeFat(0);
-        person.setTotalIntakeSatFat(0);
-        person.setTotalIntakeCarbs(0);
-        person.setTotalIntakeSugars(0);
-        person.setTotalIntakeFibre(0);
-        person.setTotalIntakeProtein(0);
-        person.setTotalIntakeSalt(0);
     }
 
 

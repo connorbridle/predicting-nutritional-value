@@ -165,4 +165,25 @@ public class ProfileObject implements Serializable {
     public void sumTotalIntakeCals(double amount) {
         totalIntakeCal += amount;
     }
+    public void sumTotalIntakeFat(double amount) {
+        totalIntakeFat += amount;
+    }
+    public void sumTotalIntakeSatFat(double amount) {
+        totalIntakeSatFat += amount;
+    }
+    public void sumTotalIntakeCarbs(double amount) {
+        totalIntakeCarbs += amount;
+    }
+    public void sumTotalIntakeSugars(double amount) {
+        totalIntakeSugars += amount;
+    }
+    public void sumTotalIntakeFibre(double amount) {
+        totalIntakeFibre += amount;
+    }
+    public void sumTotalIntakeProtein(double amount) {
+        totalIntakeProtein += amount;
+    }
+    public void sumTotalIntakeSalt(double amount) {
+        totalIntakeSalt += amount;
+    }
 }

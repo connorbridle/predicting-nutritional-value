@@ -5,8 +5,9 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TodaysFoodController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TodaysFoodController">
    <center>
       <TableView fx:id="table" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
           <columns>
@@ -24,9 +25,17 @@
       </TableView>
    </center>
    <top>
-      <Button fx:id="backButton" mnemonicParsing="false" onAction="#goBack" text="&lt;- Return" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: #1e90ff#1e90ff #1e90ff#1e90ff;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
-            <Insets bottom="10.0" right="500.0" top="10.0" />
-         </BorderPane.margin></Button>
+            <Insets />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#goBack" text="Return">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </top>
 </BorderPane>
